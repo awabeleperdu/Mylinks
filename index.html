@@ -133,6 +133,8 @@
   .btn.danger { color:var(--err); }
   .btn:disabled { opacity:.5; }
   .mini { display:flex; gap:6px; }
+  .link-btn { color:var(--mut); font-size:13px; text-decoration:underline; padding:8px 12px 4px 0; }
+  .acc-status { color:var(--mut); font-size:13px; margin:2px 0 12px; }
 
   /* Sélection à l'import */
   .chk { display:flex; gap:12px; align-items:flex-start; padding:11px 0; border-bottom:1px solid var(--line); cursor:pointer; }
@@ -202,7 +204,9 @@
 <!-- Feuille : import / sauvegarde -->
 <div class="sheet" id="sheet-more" role="dialog" aria-label="Import et sauvegarde">
   <div class="grip"></div>
-  <h2>Import et sauvegarde</h2>
+  <h2>Réglages</h2>
+  <h3 style="margin-top:4px">Compte</h3>
+  <div id="acc-box"></div>
   <h3>Importer depuis GitHub</h3>
   <p>Récupère tes repos publics, puis tu choisis ceux que tu veux garder.</p>
   <div class="row">
@@ -321,10 +325,12 @@ function load() {
 function save() {
   try { localStorage.setItem(KEY, JSON.stringify(links)); }
   catch (err) { showError("Sauvegarde impossible : " + err.message); }
+  schedulePush();
 }
 function saveCats() {
   try { localStorage.setItem(CKEY, JSON.stringify(cats)); }
   catch (err) { showError("Sauvegarde des catégories impossible : " + err.message); }
+  schedulePush();
 }
 
 // --- Feuilles ---
@@ -677,8 +683,222 @@ $("file").onchange = async ev => {
   } finally { ev.target.value = ""; }
 };
 
+// --- Compte et synchronisation (Firebase Auth + Firestore) ---
+// Optionnel : colle ici ton firebaseConfig (il n'est pas secret) pour que tous tes appareils se connectent seuls.
+const FIREBASE_CONFIG = null;
+const CFGKEY = "indexeur-fbcfg-v1";
+const FB_VERSION = "10.14.1";
+let fb = null, fbState = "idle", fbError = "", cloudUser = null;
+let unsubSnap = null, firstSync = true, pushTimer = null, syncMsg = "";
+
+function getConfig() {
+  if (FIREBASE_CONFIG) return FIREBASE_CONFIG;
+  try { return JSON.parse(localStorage.getItem(CFGKEY) || "null"); } catch { return null; }
+}
+function parseConfig(text) {
+  const cfg = {};
+  for (const m of text.matchAll(/["']?(\w+)["']?\s*:\s*["']([^"']+)["']/g)) cfg[m[1]] = m[2];
+  const missing = ["apiKey", "authDomain", "projectId", "appId"].filter(k => !cfg[k]);
+  if (missing.length) throw new Error("Config incomplète, il manque : " + missing.join(", "));
+  return cfg;
+}
+function authErr(err) {
+  const c = err && err.code || "";
+  const map = {
+    "auth/invalid-credential": "Email ou mot de passe incorrect.",
+    "auth/wrong-password": "Email ou mot de passe incorrect.",
+    "auth/user-not-found": "Aucun compte avec cet email. Utilise « Créer un compte ».",
+    "auth/invalid-email": "Cet email n'est pas valide.",
+    "auth/email-already-in-use": "Un compte existe déjà avec cet email. Utilise « Se connecter ».",
+    "auth/weak-password": "Mot de passe trop court (6 caractères minimum).",
+    "auth/missing-password": "Entre ton mot de passe.",
+    "auth/network-request-failed": "Pas de connexion internet.",
+    "auth/too-many-requests": "Trop d'essais, réessaie dans quelques minutes.",
+    "auth/operation-not-allowed": "Dans Firebase : Authentication → Sign-in method → active « E-mail/Mot de passe ».",
+    "auth/unauthorized-domain": "Dans Firebase : Authentication → Settings → Authorized domains → ajoute le domaine de ce site.",
+    "auth/invalid-api-key": "La clé apiKey de la config est invalide."
+  };
+  return (map[c] || "Erreur de compte") + (map[c] ? "" : " : " + (err && err.message || c)) + (c ? "\n(" + c + ")" : "");
+}
+const hhmm = () => new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+function setSync(msg) {
+  syncMsg = msg;
+  const el = $("acc-status"); if (el) el.textContent = msg;
+}
+
+async function initCloud() {
+  const cfg = getConfig();
+  if (!cfg) { renderAccount(); return; }
+  fbState = "loading"; fbError = ""; renderAccount();
+  try {
+    const base = `https://www.gstatic.com/firebasejs/${FB_VERSION}/`;
+    const [appM, authM, fsM] = await Promise.all([
+      import(base + "firebase-app.js"), import(base + "firebase-auth.js"), import(base + "firebase-firestore.js")
+    ]);
+    const app = appM.initializeApp(cfg);
+    fb = { authM, fsM, auth: authM.getAuth(app), db: fsM.getFirestore(app) };
+    fbState = "ready";
+    authM.onAuthStateChanged(fb.auth, onUser, err => showError("Compte : " + err.message));
+  } catch (err) {
+    fbState = "error"; fbError = err.message || String(err);
+    showError("Firebase n'a pas pu démarrer : " + fbError);
+    renderAccount();
+  }
+}
+
+function onUser(user) {
+  stopSync();
+  cloudUser = user;
+  if (user) startSync(user);
+  renderAccount();
+}
+function stopSync() {
+  if (unsubSnap) { unsubSnap(); unsubSnap = null; }
+  clearTimeout(pushTimer); pushTimer = null;
+  cloudUser = null;
+}
+function writeLocal() {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(links));
+    localStorage.setItem(CKEY, JSON.stringify(cats));
+  } catch (err) { showError("Sauvegarde locale impossible : " + err.message); }
+}
+
+function startSync(user) {
+  firstSync = true;
+  const ref = fb.fsM.doc(fb.db, "users", user.uid);
+  setSync("Synchronisation…");
+  unsubSnap = fb.fsM.onSnapshot(ref, snap => {
+    if (snap.metadata.hasPendingWrites || pushTimer) return; // nos propres modifs en cours : on ne les écrase pas
+    const remote = snap.exists() ? snap.data() : null;
+
+    if (firstSync) {
+      firstSync = false;
+      if (!remote) { pushNow(); return; }               // premier compte : on envoie ce qu'il y a sur cet appareil
+      const rl = Array.isArray(remote.links) ? remote.links : [];
+      const rc = Array.isArray(remote.cats) ? remote.cats : [];
+      const outLinks = rl.map(l => ({ ...l })), outCats = rc.map(c => ({ ...c }));
+      const added = links.filter(l => !outLinks.some(x => x.url === l.url));
+      if (added.length) {                               // fusion : on ajoute ce qui n'est pas déjà dans le compte
+        const used = new Set(added.map(l => l.cat).filter(Boolean));
+        const idMap = {};
+        cats.forEach(c => {
+          const m = outCats.find(x => x.name.toLowerCase() === c.name.toLowerCase());
+          if (m) idMap[c.id] = m.id;
+          else if (used.has(c.id)) {
+            const nc = { id: outCats.some(x => x.id === c.id) ? newId("c") : c.id, name: c.name };
+            outCats.push(nc); idMap[c.id] = nc.id;
+          }
+        });
+        added.forEach(l => outLinks.push({ ...l, cat: idMap[l.cat] || "" }));
+      }
+      links = outLinks; cats = outCats;
+      writeLocal(); render();
+      if (added.length) pushNow(); else setSync("Synchronisé à " + hhmm());
+      return;
+    }
+
+    if (!remote) return;
+    links = Array.isArray(remote.links) ? remote.links : [];
+    cats = Array.isArray(remote.cats) ? remote.cats : [];
+    writeLocal(); render();
+    setSync("Synchronisé à " + hhmm());
+  }, err => {
+    setSync("Synchronisation impossible");
+    showError(err.code === "permission-denied"
+      ? "Synchro refusée par Firebase : les règles Firestore ne sont pas publiées (ou ne correspondent pas à users/{uid})."
+      : "Synchro : " + err.message);
+  });
+}
+
+function schedulePush() {
+  if (!cloudUser || !fb || firstSync) return;
+  clearTimeout(pushTimer);
+  pushTimer = setTimeout(pushNow, 700);
+}
+async function pushNow() {
+  clearTimeout(pushTimer); pushTimer = null;
+  if (!fb || !cloudUser) return true;
+  try {
+    setSync("Envoi…");
+    await fb.fsM.setDoc(fb.fsM.doc(fb.db, "users", cloudUser.uid), { links, cats, updated: Date.now() });
+    setSync("Synchronisé à " + hhmm());
+    return true;
+  } catch (err) {
+    setSync("Échec de l'envoi");
+    showError("Envoi vers le compte impossible : " + err.message);
+    return false;
+  }
+}
+
+async function doSignOut() {
+  if (!confirm("Te déconnecter ? Les liens seront effacés de cet appareil, mais ils restent dans ton compte.")) return;
+  if (pushTimer || syncMsg.startsWith("Échec")) {
+    const ok = await pushNow();
+    if (!ok && !confirm("Les dernières modifications n'ont pas pu être envoyées. Te déconnecter quand même ?")) return;
+  }
+  try {
+    await fb.authM.signOut(fb.auth);
+    links = []; cats = DEFAULT_CATS.map(c => ({ ...c })); view = null;
+    writeLocal(); render();
+  } catch (err) { showError("Déconnexion impossible : " + err.message); }
+}
+
+function renderAccount() {
+  const box = $("acc-box"); if (!box) return;
+  const cfg = getConfig();
+  const canReset = !FIREBASE_CONFIG;
+  const resetBtn = canReset ? '<button class="link-btn" id="acc-cfg">Changer la config</button>' : "";
+  const bindReset = () => { const b = $("acc-cfg"); if (b) b.onclick = () => { if (confirm("Supprimer la config Firebase de cet appareil ?")) { localStorage.removeItem(CFGKEY); location.reload(); } }; };
+
+  if (!cfg) {
+    box.innerHTML = `<p>Crée un compte pour retrouver tes liens sur tous tes appareils. Colle d'abord la config de ton projet Firebase.</p>
+      <textarea class="field" id="fb-config" rows="4" placeholder="const firebaseConfig = { apiKey: &quot;...&quot;, authDomain: &quot;...&quot;, projectId: &quot;...&quot;, appId: &quot;...&quot; };"></textarea>
+      <button class="btn pri" id="fb-save" style="width:100%">Enregistrer la config</button>`;
+    $("fb-save").onclick = () => {
+      try { localStorage.setItem(CFGKEY, JSON.stringify(parseConfig($("fb-config").value))); initCloud(); }
+      catch (err) { showError(err.message); }
+    };
+    return;
+  }
+  if (fbState === "loading" || fbState === "idle") { box.innerHTML = "<p>Connexion à Firebase…</p>"; return; }
+  if (fbState === "error") {
+    box.innerHTML = `<p>Firebase n'a pas pu démarrer : ${esc(fbError)}</p>
+      <div class="row"><button class="btn" id="acc-retry">Réessayer</button></div>${resetBtn}`;
+    $("acc-retry").onclick = initCloud; bindReset();
+    return;
+  }
+  if (cloudUser) {
+    box.innerHTML = `<p style="margin-bottom:2px">Connecté avec <b>${esc(cloudUser.email || "")}</b></p>
+      <div class="acc-status" id="acc-status">${esc(syncMsg)}</div>
+      <button class="btn" id="acc-out" style="width:100%">Se déconnecter</button>`;
+    $("acc-out").onclick = doSignOut;
+    return;
+  }
+  box.innerHTML = `<input class="field" id="acc-email" type="email" placeholder="Email" autocomplete="email" autocapitalize="off" autocorrect="off">
+    <input class="field" id="acc-pass" type="password" placeholder="Mot de passe (6 caractères minimum)" autocomplete="current-password">
+    <div class="row"><button class="btn pri" id="acc-in">Se connecter</button><button class="btn" id="acc-up">Créer un compte</button></div>
+    <div><button class="link-btn" id="acc-reset">Mot de passe oublié ?</button>${resetBtn}</div>`;
+  const creds = () => [$("acc-email").value.trim(), $("acc-pass").value];
+  const run = async (btn, fn) => {
+    btn.disabled = true;
+    try { await fn(); } catch (err) { showError(authErr(err)); } finally { btn.disabled = false; }
+  };
+  $("acc-in").onclick = e => run(e.currentTarget, () => fb.authM.signInWithEmailAndPassword(fb.auth, ...creds()));
+  $("acc-up").onclick = e => run(e.currentTarget, () => fb.authM.createUserWithEmailAndPassword(fb.auth, ...creds()));
+  $("acc-reset").onclick = e => run(e.currentTarget, async () => {
+    const email = $("acc-email").value.trim();
+    if (!email) throw { code: "auth/invalid-email" };
+    await fb.authM.sendPasswordResetEmail(fb.auth, email);
+    alert("Email envoyé à " + email + " (regarde aussi les spams).");
+  });
+  bindReset();
+}
+
 load();
 render();
+renderAccount();
+initCloud();
 </script>
 </body>
 </html>
