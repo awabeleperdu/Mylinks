@@ -22,12 +22,13 @@
     }
   }
   * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  [hidden] { display:none !important; }
   html { background:var(--bg); background-image:radial-gradient(900px 420px at 50% -120px, color-mix(in srgb, var(--surface) 90%, transparent), transparent); background-repeat:no-repeat; }
   body {
     margin:0; font-family:var(--body); color:var(--txt); background:var(--bg);
     max-width:720px; margin-inline:auto; padding:0 16px 110px; line-height:1.45;
   }
-  button, input, textarea { font:inherit; color:inherit; }
+  button, input, textarea, select { font:inherit; color:inherit; }
   button { cursor:pointer; border:0; background:none; }
   :focus-visible { outline:2px solid var(--acc); outline-offset:2px; }
 
@@ -40,10 +41,11 @@
   #err button { float:right; color:var(--err); font-size:18px; line-height:1; padding:0 0 0 12px; }
 
   /* En-tête */
-  header { display:flex; align-items:flex-end; justify-content:space-between; padding:30px 0 18px; }
-  h1 { font-family:var(--head); font-weight:700; font-size:40px; letter-spacing:-0.045em; line-height:1; margin:0; }
+  header { display:flex; align-items:flex-end; justify-content:space-between; gap:12px; padding:30px 0 18px; }
+  .hl { display:flex; align-items:center; gap:12px; min-width:0; }
+  h1 { font-family:var(--head); font-weight:700; font-size:40px; letter-spacing:-0.045em; line-height:1; margin:0; overflow-wrap:anywhere; }
   #count { color:var(--mut); font-size:14px; margin-top:8px; }
-  .icon-btn { width:44px; height:44px; display:grid; place-items:center; border-radius:50%; background:var(--surface); border:1px solid var(--line); box-shadow:var(--shadow); }
+  .icon-btn { flex:none; width:44px; height:44px; display:grid; place-items:center; border-radius:50%; background:var(--surface); border:1px solid var(--line); box-shadow:var(--shadow); }
   .icon-btn svg, .act svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 
   /* Recherche */
@@ -54,6 +56,22 @@
     background:var(--surface); font-size:16px; box-shadow:var(--shadow);
   }
   #search::placeholder { color:var(--mut); }
+
+  /* Blocs (catégories) */
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px; }
+  .block {
+    text-align:left; min-height:132px; padding:16px; border-radius:26px; background:var(--surface);
+    border:1px solid var(--line); box-shadow:var(--shadow); display:flex; flex-direction:column; justify-content:space-between;
+  }
+  .block:active { transform:scale(.98); }
+  .block .ico { width:40px; height:40px; border-radius:13px; background:var(--surface2); border:1px solid var(--line); display:grid; place-items:center; color:var(--mut); }
+  .block .ico svg { width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+  .bname { font-family:var(--head); font-weight:600; font-size:17px; letter-spacing:-0.02em; margin-top:14px; overflow-wrap:anywhere; }
+  .bn { color:var(--mut); font-size:13px; }
+  .block.new { background:transparent; box-shadow:none; border:1.5px dashed var(--line); align-items:center; justify-content:center; color:var(--mut); gap:6px; text-align:center; }
+  .block.new svg { width:24px; height:24px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; }
+
+  .cat-actions { display:flex; gap:8px; margin-top:14px; }
 
   /* Tags */
   #tags { display:flex; gap:8px; overflow-x:auto; padding:14px 0 6px; scrollbar-width:none; }
@@ -102,7 +120,7 @@
   .sheet.open { transform:none; visibility:visible; }
   .grip { width:40px; height:4px; border-radius:4px; background:var(--line); margin:4px auto 14px; }
   .sheet h2 { font-family:var(--head); font-weight:700; font-size:24px; letter-spacing:-0.035em; margin:0 0 14px; }
-  .sheet h3 { font-family:var(--head); font-size:16px; margin:22px 0 4px; }
+  .sheet h3 { font-family:var(--head); font-size:16px; margin:22px 0 4px; display:flex; align-items:center; justify-content:space-between; gap:8px; }
   .sheet p { color:var(--mut); font-size:13px; margin:0 0 10px; }
   .field { width:100%; padding:13px 14px; border-radius:14px; border:1px solid var(--line); background:var(--surface2); font-size:16px; margin-bottom:10px; }
   .field::placeholder { color:var(--mut); }
@@ -111,7 +129,18 @@
   .row > * { flex:1; }
   .btn { padding:14px 16px; border-radius:16px; background:var(--surface2); border:1px solid var(--line); font-weight:500; }
   .btn.pri { background:var(--acc); border-color:var(--acc); color:var(--acc-ink); }
-  .btn:disabled { opacity:.6; }
+  .btn.sm { padding:7px 12px; border-radius:99px; font-size:13px; flex:none; }
+  .btn.danger { color:var(--err); }
+  .btn:disabled { opacity:.5; }
+  .mini { display:flex; gap:6px; }
+
+  /* Sélection à l'import */
+  .chk { display:flex; gap:12px; align-items:flex-start; padding:11px 0; border-bottom:1px solid var(--line); cursor:pointer; }
+  .chk input { flex:none; width:22px; height:22px; margin:1px 0 0; accent-color:var(--acc); }
+  .chk .ct { display:block; font-weight:500; overflow-wrap:anywhere; }
+  .chk small { display:block; color:var(--mut); font-size:12px; overflow-wrap:anywhere; }
+  .chk.dis { opacity:.45; cursor:default; }
+  .sticky { position:sticky; bottom:-22px; background:var(--surface); padding:14px 0 4px; margin-top:6px; }
 
   @media (prefers-reduced-motion: reduce) { .sheet { transition:none; } }
 </style>
@@ -121,9 +150,14 @@
 <div id="err"></div>
 
 <header>
-  <div>
-    <h1>Mes liens</h1>
-    <div id="count"></div>
+  <div class="hl">
+    <button class="icon-btn" id="btn-back" aria-label="Retour" hidden>
+      <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
+    <div>
+      <h1 id="title">Mes liens</h1>
+      <div id="count"></div>
+    </div>
   </div>
   <button class="icon-btn" id="btn-more" aria-label="Import et sauvegarde">
     <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></svg>
@@ -132,9 +166,16 @@
 
 <div class="search">
   <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-  <input id="search" type="search" placeholder="Rechercher un lien, un tag...">
+  <input id="search" type="search" placeholder="Rechercher dans tous les liens...">
 </div>
+
+<div id="cat-actions" class="cat-actions" hidden>
+  <button class="btn sm" id="btn-rename">Renommer</button>
+  <button class="btn sm danger" id="btn-delcat">Supprimer la catégorie</button>
+</div>
+
 <div id="tags"></div>
+<div id="grid" class="grid"></div>
 <div id="list"></div>
 
 <button id="fab" aria-label="Ajouter un lien">
@@ -149,6 +190,7 @@
   <h2 id="sheet-add-title">Nouveau lien</h2>
   <input class="field" id="f-url" placeholder="https://..." inputmode="url" autocapitalize="off" autocorrect="off">
   <input class="field" id="f-title" placeholder="Titre (ex: Repo Lecture)">
+  <select class="field" id="f-cat" aria-label="Catégorie"></select>
   <input class="field" id="f-tags" placeholder="Tags, séparés par des virgules" autocapitalize="off">
   <textarea class="field" id="f-note" placeholder="Note (optionnel)"></textarea>
   <div class="row">
@@ -162,13 +204,13 @@
   <div class="grip"></div>
   <h2>Import et sauvegarde</h2>
   <h3>Importer depuis GitHub</h3>
-  <p>Récupère tes repos publics, avec le lien du site GitHub Pages quand il existe. Les doublons sont ignorés.</p>
+  <p>Récupère tes repos publics, puis tu choisis ceux que tu veux garder.</p>
   <div class="row">
     <input class="field" id="gh-user" placeholder="Ton pseudo GitHub" autocapitalize="off" autocorrect="off" style="margin-bottom:0">
-    <button class="btn pri" id="btn-gh" style="flex:none">Importer</button>
+    <button class="btn pri" id="btn-gh" style="flex:none">Chercher</button>
   </div>
   <h3>Sauvegarde</h3>
-  <p>Exporte tes liens dans un fichier JSON, ou récupère-les depuis un fichier.</p>
+  <p>Exporte tes liens (avec leurs catégories) dans un fichier JSON, ou récupère-les depuis un fichier.</p>
   <div class="row">
     <button class="btn" id="btn-export">Exporter</button>
     <button class="btn" id="btn-import">Importer un fichier</button>
@@ -176,11 +218,38 @@
   <input type="file" id="file" accept=".json" style="display:none">
 </div>
 
+<!-- Feuille : choix des liens GitHub -->
+<div class="sheet" id="sheet-gh" role="dialog" aria-label="Choisir les liens à importer">
+  <div class="grip"></div>
+  <h2>Choisis tes liens</h2>
+  <p id="gh-summary"></p>
+
+  <h3>Repos GitHub
+    <span class="mini"><button class="btn sm" id="gh-r-all">Tout</button><button class="btn sm" id="gh-r-none">Aucun</button></span>
+  </h3>
+  <select class="field" id="gh-cat-repo" aria-label="Catégorie des repos" style="margin-top:8px"></select>
+  <div id="gh-repos"></div>
+
+  <h3>Sites GitHub Pages
+    <span class="mini"><button class="btn sm" id="gh-s-all">Tout</button><button class="btn sm" id="gh-s-none">Aucun</button></span>
+  </h3>
+  <select class="field" id="gh-cat-site" aria-label="Catégorie des sites" style="margin-top:8px"></select>
+  <div id="gh-sites"></div>
+
+  <div class="sticky">
+    <button class="btn pri" id="gh-add" style="width:100%">Ajouter la sélection</button>
+  </div>
+</div>
+
 <script>
 const KEY = "indexeur-liens-v1";
+const CKEY = "indexeur-cats-v1";
 let links = [];
+let cats = [];
+let view = null;        // null = accueil, "none" = sans catégorie, sinon id de catégorie
 let activeTag = null;
 let editingId = null;
+let ghItems = [];
 
 const $ = id => document.getElementById(id);
 
@@ -195,41 +264,67 @@ function showError(msg) {
 window.onerror = (m, src, line) => showError(m + " (ligne " + line + ")");
 window.onunhandledrejection = ev => showError("Promesse rejetée : " + (ev.reason && ev.reason.message || ev.reason));
 
-// --- Stockage ---
-function load() {
-  try {
-    links = JSON.parse(localStorage.getItem(KEY) || "[]");
-  } catch (err) {
-    showError("Lecture du stockage impossible : " + err.message);
-    links = [];
-  }
-}
-function save() {
-  try {
-    localStorage.setItem(KEY, JSON.stringify(links));
-  } catch (err) {
-    showError("Sauvegarde impossible : " + err.message);
-  }
-}
-
 // --- Utilitaires ---
+const newId = p => p + "-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 function normUrl(u) {
   u = u.trim();
   if (!u) return "";
   if (!/^https?:\/\//i.test(u)) u = "https://" + u;
   return u;
 }
-function parseTags(s) {
-  return s.split(",").map(t => t.trim().toLowerCase()).filter(Boolean);
-}
+function parseTags(s) { return s.split(",").map(t => t.trim().toLowerCase()).filter(Boolean); }
 function esc(s) {
-  return s.replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+  return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
 }
-function hostOf(u) {
-  try { return new URL(u).hostname.replace(/^www\./, ""); } catch { return u; }
-}
+function hostOf(u) { try { return new URL(u).hostname.replace(/^www\./, ""); } catch { return u; } }
 function pathOf(u) {
   try { const x = new URL(u); return hostOf(u) + (x.pathname === "/" ? "" : x.pathname); } catch { return u; }
+}
+function catName(id) {
+  if (!id) return "Sans catégorie";
+  const c = cats.find(c => c.id === id);
+  return c ? c.name : "Sans catégorie";
+}
+function plural(n, one, many) { return n + " " + (n > 1 ? many : one); }
+
+// --- Stockage ---
+const DEFAULT_CATS = [
+  { id: "c-repos", name: "Projets GitHub" },
+  { id: "c-sites", name: "Sites en ligne" },
+  { id: "c-perso", name: "Projets perso" },
+  { id: "c-autre", name: "Autres projets" }
+];
+function catFromTags(tags) {
+  const has = id => cats.some(c => c.id === id);
+  if (tags.includes("pages") && has("c-sites")) return "c-sites";
+  if (tags.includes("repo") && has("c-repos")) return "c-repos";
+  return "";
+}
+function load() {
+  try {
+    links = JSON.parse(localStorage.getItem(KEY) || "[]");
+    const rawCats = localStorage.getItem(CKEY);
+    if (rawCats) {
+      cats = JSON.parse(rawCats);
+    } else {
+      // Première fois : catégories par défaut + rangement des anciens liens
+      cats = DEFAULT_CATS.map(c => ({ ...c }));
+      links.forEach(l => { if (l.cat === undefined) l.cat = catFromTags(l.tags || []); });
+      saveCats(); save();
+    }
+    links.forEach(l => { if (l.cat === undefined) l.cat = ""; });
+  } catch (err) {
+    showError("Lecture du stockage impossible : " + err.message);
+    links = []; cats = DEFAULT_CATS.map(c => ({ ...c }));
+  }
+}
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(links)); }
+  catch (err) { showError("Sauvegarde impossible : " + err.message); }
+}
+function saveCats() {
+  try { localStorage.setItem(CKEY, JSON.stringify(cats)); }
+  catch (err) { showError("Sauvegarde des catégories impossible : " + err.message); }
 }
 
 // --- Feuilles ---
@@ -243,9 +338,51 @@ function closeSheets() {
 }
 $("backdrop").onclick = () => { closeSheets(); resetForm(); };
 $("btn-more").onclick = () => openSheet("sheet-more");
-$("fab").onclick = () => { resetForm(); openSheet("sheet-add"); setTimeout(() => $("f-url").focus(), 280); };
+
+function fillCatSelect(sel, selected) {
+  sel.innerHTML = '<option value="">Sans catégorie</option>' +
+    cats.map(c => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("");
+  sel.value = cats.some(c => c.id === selected) ? selected : "";
+}
+
+// --- Navigation / catégories ---
+function go(v) {
+  view = v; activeTag = null; $("search").value = "";
+  window.scrollTo({ top: 0 });
+  render();
+}
+$("btn-back").onclick = () => go(null);
+
+function addCategory() {
+  const name = (prompt("Nom de la nouvelle catégorie ?") || "").trim();
+  if (!name) return;
+  if (cats.some(c => c.name.toLowerCase() === name.toLowerCase())) return showError("Cette catégorie existe déjà.");
+  cats.push({ id: newId("c"), name });
+  saveCats(); render();
+}
+$("btn-rename").onclick = () => {
+  const c = cats.find(c => c.id === view); if (!c) return;
+  const name = (prompt("Nouveau nom ?", c.name) || "").trim();
+  if (!name || name === c.name) return;
+  if (cats.some(x => x.id !== c.id && x.name.toLowerCase() === name.toLowerCase())) return showError("Cette catégorie existe déjà.");
+  c.name = name; saveCats(); render();
+};
+$("btn-delcat").onclick = () => {
+  const c = cats.find(c => c.id === view); if (!c) return;
+  const n = links.filter(l => l.cat === c.id).length;
+  if (!confirm(`Supprimer « ${c.name} » ?` + (n ? `\nLes ${n} lien(s) restent dans ton index, sans catégorie.` : ""))) return;
+  links.forEach(l => { if (l.cat === c.id) l.cat = ""; });
+  cats = cats.filter(x => x.id !== c.id);
+  saveCats(); save(); go(null);
+};
 
 // --- Ajout / modif ---
+$("fab").onclick = () => {
+  resetForm();
+  fillCatSelect($("f-cat"), view && view !== "none" ? view : "");
+  openSheet("sheet-add");
+  setTimeout(() => $("f-url").focus(), 280);
+};
 function resetForm() {
   editingId = null;
   $("f-title").value = $("f-url").value = $("f-tags").value = $("f-note").value = "";
@@ -258,23 +395,23 @@ $("btn-save").onclick = () => {
   if (!url) return showError("L'URL est vide.");
   try { new URL(url); } catch { return showError("URL invalide : " + url); }
   const title = $("f-title").value.trim() || pathOf(url);
-  const item = { title, url, tags: parseTags($("f-tags").value), note: $("f-note").value.trim() };
+  const item = { title, url, cat: $("f-cat").value, tags: parseTags($("f-tags").value), note: $("f-note").value.trim() };
   if (editingId) {
     const i = links.findIndex(l => l.id === editingId);
     if (i >= 0) links[i] = { ...links[i], ...item };
   } else {
     if (links.some(l => l.url === url)) return showError("Ce lien existe déjà.");
-    links.unshift({ id: Date.now() + "-" + Math.random().toString(36).slice(2, 6), added: Date.now(), ...item });
+    links.unshift({ id: newId("l"), added: Date.now(), ...item });
   }
   $("err").style.display = "none";
   save(); closeSheets(); resetForm(); render();
 };
-
 function edit(id) {
   const l = links.find(x => x.id === id);
   if (!l) return;
   editingId = id;
   $("f-title").value = l.title; $("f-url").value = l.url;
+  fillCatSelect($("f-cat"), l.cat);
   $("f-tags").value = l.tags.join(", "); $("f-note").value = l.note;
   $("btn-save").textContent = "Enregistrer";
   $("sheet-add-title").textContent = "Modifier le lien";
@@ -300,46 +437,21 @@ const ICON = {
   open: '<svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg>',
   copy: '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>',
   edit: '<svg viewBox="0 0 24 24"><path d="M4 20h4l10-10-4-4L4 16z"/></svg>',
-  del:  '<svg viewBox="0 0 24 24"><path d="M5 7h14M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>'
+  del:  '<svg viewBox="0 0 24 24"><path d="M5 7h14M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>',
+  folder: '<svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+  plus: '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>'
 };
 
-function render() {
-  const q = $("search").value.trim().toLowerCase();
-  const allTags = [...new Set(links.flatMap(l => l.tags))].sort();
-  if (activeTag && !allTags.includes(activeTag)) activeTag = null;
-
-  $("tags").innerHTML = allTags.length
-    ? [`<button class="tag ${activeTag === null ? "on" : ""}" data-tag="">Tous</button>`]
-        .concat(allTags.map(t => `<button class="tag ${t === activeTag ? "on" : ""}" data-tag="${esc(t)}">${esc(t)}</button>`)).join("")
-    : "";
-  $("tags").querySelectorAll(".tag").forEach(el => el.onclick = () => {
-    activeTag = el.dataset.tag || null;
-    render();
-  });
-
-  const shown = links.filter(l => {
-    if (activeTag && !l.tags.includes(activeTag)) return false;
-    if (!q) return true;
-    return (l.title + " " + l.url + " " + l.note + " " + l.tags.join(" ")).toLowerCase().includes(q);
-  });
-  $("count").textContent = links.length === 0 ? "Aucun lien"
-    : shown.length === links.length ? links.length + " lien" + (links.length > 1 ? "s" : "")
-    : shown.length + " sur " + links.length;
-
+function renderItems(items, showCat) {
   const list = $("list");
   list.innerHTML = "";
-
-  if (!shown.length) {
-    list.innerHTML = links.length
-      ? '<div class="empty"><b>Rien trouvé</b>Essaie un autre mot ou un autre tag.</div>'
-      : '<div class="empty"><b>Ton index est vide</b>Ajoute un lien avec le bouton +, ou importe tes repos depuis le menu ⋯ en haut à droite.</div>';
-    return;
-  }
-
-  shown.forEach(l => {
+  items.forEach(l => {
     const host = hostOf(l.url);
     const d = document.createElement("div");
     d.className = "item";
+    const meta = [];
+    if (showCat) meta.push(esc(catName(l.cat)));
+    if (l.tags.length) meta.push("#" + l.tags.map(esc).join("  #"));
     d.innerHTML = `
       <div class="fav"><img alt="" src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=64"></div>
       <div class="main">
@@ -348,7 +460,7 @@ function render() {
           <div class="host">${esc(pathOf(l.url))}</div>
         </a>
         ${l.note ? `<div class="n">${esc(l.note)}</div>` : ""}
-        ${l.tags.length ? `<div class="tg">#${l.tags.map(esc).join("  #")}</div>` : ""}
+        ${meta.length ? `<div class="tg">${meta.join("  ·  ")}</div>` : ""}
         <div class="acts">
           <button class="act go" data-a="open">${ICON.open} Ouvrir</button>
           <button class="act" data-a="copy" aria-label="Copier le lien">${ICON.copy}</button>
@@ -356,7 +468,6 @@ function render() {
           <button class="act danger" data-a="del" aria-label="Supprimer">${ICON.del}</button>
         </div>
       </div>`;
-    // Si le favicon ne charge pas : initiale du titre
     const img = d.querySelector(".fav img");
     img.onerror = () => { d.querySelector(".fav").textContent = (l.title[0] || "?").toUpperCase(); };
     d.querySelector('[data-a="open"]').onclick = () => window.open(l.url, "_blank", "noopener");
@@ -366,47 +477,174 @@ function render() {
     list.appendChild(d);
   });
 }
+
+function renderHome() {
+  const none = links.filter(l => !l.cat || !cats.some(c => c.id === l.cat)).length;
+  const blocks = cats.map(c => ({ id: c.id, name: c.name, n: links.filter(l => l.cat === c.id).length }));
+  if (none) blocks.push({ id: "none", name: "Sans catégorie", n: none });
+
+  $("title").textContent = "Mes liens";
+  $("count").textContent = plural(links.length, "lien", "liens") + " · " + plural(cats.length, "catégorie", "catégories");
+
+  const grid = $("grid");
+  grid.innerHTML = "";
+  blocks.forEach(b => {
+    const el = document.createElement("button");
+    el.className = "block";
+    el.innerHTML = `<span class="ico">${ICON.folder}</span><span><span class="bname" style="display:block">${esc(b.name)}</span><span class="bn">${plural(b.n, "lien", "liens")}</span></span>`;
+    el.onclick = () => go(b.id);
+    grid.appendChild(el);
+  });
+  const nw = document.createElement("button");
+  nw.className = "block new";
+  nw.innerHTML = `${ICON.plus}<span>Nouvelle catégorie</span>`;
+  nw.onclick = addCategory;
+  grid.appendChild(nw);
+}
+
+function render() {
+  const q = $("search").value.trim().toLowerCase();
+  const inCat = view !== null;
+
+  $("btn-back").hidden = !(inCat && !q);
+  $("cat-actions").hidden = !(inCat && view !== "none" && !q);
+  $("grid").hidden = !!(inCat || q);
+  $("tags").hidden = !(inCat && !q);
+  $("list").hidden = !(inCat || q);
+
+  if (q) {
+    // Recherche globale
+    const res = links.filter(l => (l.title + " " + l.url + " " + l.note + " " + l.tags.join(" ") + " " + catName(l.cat)).toLowerCase().includes(q));
+    $("title").textContent = "Recherche";
+    $("count").textContent = plural(res.length, "résultat", "résultats");
+    if (!res.length) $("list").innerHTML = '<div class="empty"><b>Rien trouvé</b>Essaie un autre mot.</div>';
+    else renderItems(res, true);
+    return;
+  }
+
+  if (!inCat) { renderHome(); return; }
+
+  // Vue d'une catégorie
+  if (view !== "none" && !cats.some(c => c.id === view)) { view = null; return render(); }
+  const inView = links.filter(l => view === "none" ? (!l.cat || !cats.some(c => c.id === l.cat)) : l.cat === view);
+  const allTags = [...new Set(inView.flatMap(l => l.tags))].sort();
+  if (activeTag && !allTags.includes(activeTag)) activeTag = null;
+
+  $("title").textContent = catName(view === "none" ? "" : view);
+  $("tags").innerHTML = allTags.length
+    ? [`<button class="tag ${activeTag === null ? "on" : ""}" data-tag="">Tous</button>`]
+        .concat(allTags.map(t => `<button class="tag ${t === activeTag ? "on" : ""}" data-tag="${esc(t)}">${esc(t)}</button>`)).join("")
+    : "";
+  $("tags").querySelectorAll(".tag").forEach(el => el.onclick = () => { activeTag = el.dataset.tag || null; render(); });
+
+  const shown = inView.filter(l => !activeTag || l.tags.includes(activeTag));
+  $("count").textContent = shown.length === inView.length ? plural(inView.length, "lien", "liens") : shown.length + " sur " + inView.length;
+
+  if (!shown.length) {
+    $("list").innerHTML = inView.length
+      ? '<div class="empty"><b>Rien avec ce tag</b>Choisis « Tous » pour tout voir.</div>'
+      : '<div class="empty"><b>Catégorie vide</b>Ajoute un lien avec le bouton +.</div>';
+  } else renderItems(shown, false);
+}
 $("search").oninput = render;
 
-// --- Import GitHub ---
+// --- Import GitHub : recherche puis sélection ---
 $("btn-gh").onclick = async () => {
   const user = $("gh-user").value.trim();
   if (!user) return showError("Entre ton pseudo GitHub.");
   const btn = $("btn-gh"); btn.disabled = true; btn.textContent = "...";
   try {
-    let page = 1, added = 0;
+    const items = [];
+    let page = 1;
     while (true) {
       const r = await fetch(`https://api.github.com/users/${encodeURIComponent(user)}/repos?per_page=100&page=${page}`);
       if (!r.ok) throw new Error("GitHub a répondu " + r.status + (r.status === 404 ? " (pseudo introuvable)" : r.status === 403 ? " (limite d'appels atteinte, réessaie plus tard)" : ""));
       const repos = await r.json();
       if (!repos.length) break;
       for (const repo of repos) {
-        const entries = [{ title: repo.name, url: repo.html_url, tags: ["github", "repo"], note: repo.description || "" }];
+        items.push({ kind: "repo", title: repo.name, url: repo.html_url, note: repo.description || "" });
         if (repo.has_pages) {
-          entries.push({ title: repo.name + " (site)", url: `https://${repo.owner.login.toLowerCase()}.github.io/${repo.name}/`, tags: ["github", "pages"], note: repo.description || "" });
-        }
-        for (const e of entries) {
-          if (links.some(l => l.url === e.url)) continue;
-          links.push({ id: Date.now() + "-" + Math.random().toString(36).slice(2, 6), added: Date.now(), ...e });
-          added++;
+          const login = repo.owner.login.toLowerCase();
+          const site = repo.name.toLowerCase() === login + ".github.io"
+            ? `https://${login}.github.io/`
+            : `https://${login}.github.io/${repo.name}/`;
+          items.push({ kind: "site", title: repo.name + " (site)", url: site, note: repo.description || "" });
         }
       }
       if (repos.length < 100) break;
       page++;
     }
-    save(); render(); closeSheets();
-    alert(added + " lien(s) ajouté(s).");
+    if (!items.length) throw new Error("Aucun repo public trouvé pour « " + user + " ».");
+    ghItems = items;
+    openGhPicker();
   } catch (err) {
     showError("Import GitHub échoué : " + err.message);
   } finally {
-    btn.disabled = false; btn.textContent = "Importer";
+    btn.disabled = false; btn.textContent = "Chercher";
   }
+};
+
+function openGhPicker() {
+  const exists = it => links.some(l => l.url === it.url);
+  const nRepos = ghItems.filter(i => i.kind === "repo").length;
+  const nSites = ghItems.filter(i => i.kind === "site").length;
+  const nEx = ghItems.filter(exists).length;
+  $("gh-summary").textContent = `${plural(nRepos, "repo trouvé", "repos trouvés")}, ${plural(nSites, "site", "sites")}` +
+    (nEx ? ` · ${nEx} déjà dans ton index` : "") + ". Décoche ce que tu ne veux pas.";
+
+  fillCatSelect($("gh-cat-repo"), "c-repos");
+  fillCatSelect($("gh-cat-site"), "c-sites");
+
+  ["repo", "site"].forEach(kind => {
+    const box = $(kind === "repo" ? "gh-repos" : "gh-sites");
+    const mine = ghItems.map((it, i) => ({ it, i })).filter(x => x.it.kind === kind);
+    box.innerHTML = mine.length ? mine.map(({ it, i }) => {
+      const ex = exists(it);
+      return `<label class="chk ${ex ? "dis" : ""}"><input type="checkbox" data-i="${i}" ${ex ? "disabled" : "checked"}>
+        <span><span class="ct">${esc(it.title)}${ex ? " (déjà ajouté)" : ""}</span><small>${esc(it.url)}</small></span></label>`;
+    }).join("") : '<p style="margin-top:10px">Aucun site GitHub Pages détecté.</p>';
+    box.querySelectorAll("input").forEach(c => c.onchange = updateGhCount);
+  });
+  updateGhCount();
+  closeSheets();
+  openSheet("sheet-gh");
+}
+function setAll(boxId, val) {
+  $(boxId).querySelectorAll("input:not(:disabled)").forEach(c => c.checked = val);
+  updateGhCount();
+}
+$("gh-r-all").onclick = () => setAll("gh-repos", true);
+$("gh-r-none").onclick = () => setAll("gh-repos", false);
+$("gh-s-all").onclick = () => setAll("gh-sites", true);
+$("gh-s-none").onclick = () => setAll("gh-sites", false);
+
+function updateGhCount() {
+  const n = document.querySelectorAll("#sheet-gh input:checked").length;
+  const b = $("gh-add");
+  b.textContent = n ? `Ajouter la sélection (${n})` : "Rien de coché";
+  b.disabled = !n;
+}
+$("gh-add").onclick = () => {
+  let added = 0;
+  document.querySelectorAll("#sheet-gh input:checked").forEach(c => {
+    const it = ghItems[+c.dataset.i];
+    if (!it || links.some(l => l.url === it.url)) return;
+    links.push({
+      id: newId("l"), added: Date.now(), title: it.title, url: it.url, note: it.note,
+      cat: it.kind === "repo" ? $("gh-cat-repo").value : $("gh-cat-site").value,
+      tags: it.kind === "repo" ? ["github", "repo"] : ["github", "pages"]
+    });
+    added++;
+  });
+  save(); closeSheets(); render();
+  alert(added + " lien(s) ajouté(s).");
 };
 
 // --- Export / import JSON ---
 $("btn-export").onclick = () => {
   try {
-    const blob = new Blob([JSON.stringify(links, null, 2)], { type: "application/json" });
+    const out = links.map(l => ({ title: l.title, url: l.url, categorie: l.cat ? catName(l.cat) : "", tags: l.tags, note: l.note }));
+    const blob = new Blob([JSON.stringify(out, null, 2)], { type: "application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = "mes-liens.json";
@@ -422,10 +660,17 @@ $("file").onchange = async ev => {
     let added = 0;
     for (const l of data) {
       if (!l.url || links.some(x => x.url === l.url)) continue;
-      links.push({ id: l.id || Date.now() + "-" + Math.random().toString(36).slice(2, 6), added: l.added || Date.now(), title: l.title || l.url, url: l.url, tags: l.tags || [], note: l.note || "" });
+      const tags = l.tags || [];
+      let cat = "";
+      if (l.categorie) {
+        let c = cats.find(c => c.name.toLowerCase() === String(l.categorie).toLowerCase());
+        if (!c) { c = { id: newId("c"), name: String(l.categorie) }; cats.push(c); }
+        cat = c.id;
+      } else cat = catFromTags(tags);
+      links.push({ id: newId("l"), added: Date.now(), title: l.title || l.url, url: l.url, cat, tags, note: l.note || "" });
       added++;
     }
-    save(); render(); closeSheets();
+    saveCats(); save(); closeSheets(); render();
     alert(added + " lien(s) importé(s).");
   } catch (err) {
     showError("Import JSON échoué : " + err.message);
