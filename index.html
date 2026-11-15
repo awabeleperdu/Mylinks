@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ececef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e0e10" media="(prefers-color-scheme: dark)">
+<title>Mes liens</title>
+<style>
+  :root {
+    --bg:#ececef; --surface:#ffffff; --surface2:#f2f2f5; --line:#dcdce1;
+    --txt:#1d1d1f; --mut:#6e6e73; --acc:#1d1d1f; --acc-ink:#ffffff; --err:#d92d3f;
+    --shadow:0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.06);
+    --head:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", system-ui, sans-serif;
+    --body:-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#0e0e10; --surface:#1c1c1f; --surface2:#2a2a2e; --line:#38383d;
+      --txt:#f5f5f7; --mut:#98989f; --acc:#f5f5f7; --acc-ink:#111113; --err:#ff6b7a;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html { background:var(--bg); background-image:radial-gradient(900px 420px at 50% -120px, color-mix(in srgb, var(--surface) 90%, transparent), transparent); background-repeat:no-repeat; }
+  body {
+    margin:0; font-family:var(--body); color:var(--txt); background:var(--bg);
+    max-width:720px; margin-inline:auto; padding:0 16px 110px; line-height:1.45;
+  }
+  button, input, textarea { font:inherit; color:inherit; }
+  button { cursor:pointer; border:0; background:none; }
+  :focus-visible { outline:2px solid var(--acc); outline-offset:2px; }
+
+  /* Erreurs : toujours visibles en haut */
+  #err {
+    display:none; position:fixed; z-index:50; top:10px; left:10px; right:10px; max-width:700px; margin-inline:auto;
+    background:var(--surface); border:1px solid var(--err); color:var(--err); padding:12px 14px; border-radius:18px;
+    font-size:13px; white-space:pre-wrap; word-break:break-word; box-shadow:var(--shadow);
+  }
+  #err button { float:right; color:var(--err); font-size:18px; line-height:1; padding:0 0 0 12px; }
+
+  /* En-tête */
+  header { display:flex; align-items:flex-end; justify-content:space-between; padding:30px 0 18px; }
+  h1 { font-family:var(--head); font-weight:700; font-size:40px; letter-spacing:-0.045em; line-height:1; margin:0; }
+  #count { color:var(--mut); font-size:14px; margin-top:8px; }
+  .icon-btn { width:44px; height:44px; display:grid; place-items:center; border-radius:50%; background:var(--surface); border:1px solid var(--line); box-shadow:var(--shadow); }
+  .icon-btn svg, .act svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+  /* Recherche */
+  .search { position:relative; }
+  .search svg { position:absolute; left:16px; top:50%; transform:translateY(-50%); width:18px; height:18px; stroke:var(--mut); fill:none; stroke-width:2; stroke-linecap:round; }
+  #search {
+    width:100%; padding:14px 18px 14px 44px; border-radius:16px; border:1px solid var(--line);
+    background:var(--surface); font-size:16px; box-shadow:var(--shadow);
+  }
+  #search::placeholder { color:var(--mut); }
+
+  /* Tags */
+  #tags { display:flex; gap:8px; overflow-x:auto; padding:14px 0 6px; scrollbar-width:none; }
+  #tags::-webkit-scrollbar { display:none; }
+  .tag { flex:none; padding:7px 14px; border-radius:99px; font-size:14px; color:var(--mut); background:var(--surface); border:1px solid var(--line); }
+  .tag.on { background:var(--acc); border-color:var(--acc); color:var(--acc-ink); font-weight:500; }
+
+  /* Liste */
+  #list { margin-top:10px; }
+  .item { display:grid; grid-template-columns:48px 1fr; gap:14px; padding:16px; margin-bottom:12px; background:var(--surface); border:1px solid var(--line); border-radius:24px; box-shadow:var(--shadow); }
+  .fav {
+    width:48px; height:48px; border-radius:15px; background:var(--surface2); border:1px solid var(--line); display:grid; place-items:center;
+    font-family:var(--head); font-weight:600; font-size:20px; color:var(--mut); overflow:hidden;
+  }
+  .fav img { width:26px; height:26px; }
+  .main { min-width:0; }
+  .main a { display:block; text-decoration:none; color:inherit; }
+  .t { font-family:var(--head); font-weight:600; font-size:17px; letter-spacing:-0.02em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .host { color:var(--mut); font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .n { margin-top:6px; font-size:14px; color:var(--txt); opacity:.8; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .tg { margin-top:6px; font-size:13px; color:var(--mut); }
+  .acts { display:flex; gap:6px; margin-top:10px; }
+  .act { height:36px; min-width:36px; padding:0 12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border-radius:99px; background:var(--surface2); border:1px solid var(--line); font-size:13px; color:var(--mut); }
+  .act.go { background:var(--acc); border-color:var(--acc); color:var(--acc-ink); font-weight:500; }
+  .act.danger:active { color:var(--err); border-color:var(--err); }
+
+  .empty { text-align:center; color:var(--mut); padding:60px 20px; }
+  .empty b { display:block; font-family:var(--head); font-size:22px; color:var(--txt); margin-bottom:6px; }
+
+  /* Bouton + */
+  #fab {
+    position:fixed; right:18px; bottom:calc(18px + env(safe-area-inset-bottom)); z-index:10;
+    width:60px; height:60px; border-radius:50%; background:var(--acc); color:var(--acc-ink);
+    display:grid; place-items:center; box-shadow:0 10px 30px rgba(0,0,0,.28);
+  }
+  #fab svg { width:26px; height:26px; stroke:currentColor; fill:none; stroke-width:2.6; stroke-linecap:round; }
+
+  /* Feuilles (formulaires) */
+  #backdrop { position:fixed; inset:0; background:rgba(0,0,0,.35); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); z-index:20; display:none; }
+  .sheet {
+    position:fixed; left:0; right:0; bottom:0; z-index:30; max-width:720px; margin-inline:auto;
+    background:var(--surface); border-radius:32px 32px 0 0; border:1px solid var(--line); border-bottom:0; box-shadow:var(--shadow);
+    padding:10px 18px calc(22px + env(safe-area-inset-bottom)); max-height:88vh; overflow-y:auto;
+    transform:translateY(105%); transition:transform .25s ease; visibility:hidden;
+  }
+  .sheet.open { transform:none; visibility:visible; }
+  .grip { width:40px; height:4px; border-radius:4px; background:var(--line); margin:4px auto 14px; }
+  .sheet h2 { font-family:var(--head); font-weight:700; font-size:24px; letter-spacing:-0.035em; margin:0 0 14px; }
+  .sheet h3 { font-family:var(--head); font-size:16px; margin:22px 0 4px; }
+  .sheet p { color:var(--mut); font-size:13px; margin:0 0 10px; }
+  .field { width:100%; padding:13px 14px; border-radius:14px; border:1px solid var(--line); background:var(--surface2); font-size:16px; margin-bottom:10px; }
+  .field::placeholder { color:var(--mut); }
+  textarea.field { resize:vertical; min-height:70px; }
+  .row { display:flex; gap:10px; }
+  .row > * { flex:1; }
+  .btn { padding:14px 16px; border-radius:16px; background:var(--surface2); border:1px solid var(--line); font-weight:500; }
+  .btn.pri { background:var(--acc); border-color:var(--acc); color:var(--acc-ink); }
+  .btn:disabled { opacity:.6; }
+
+  @media (prefers-reduced-motion: reduce) { .sheet { transition:none; } }
+</style>
+</head>
+<body>
+
+<div id="err"></div>
+
+<header>
+  <div>
+    <h1>Mes liens</h1>
+    <div id="count"></div>
+  </div>
+  <button class="icon-btn" id="btn-more" aria-label="Import et sauvegarde">
+    <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></svg>
+  </button>
+</header>
+
+<div class="search">
+  <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+  <input id="search" type="search" placeholder="Rechercher un lien, un tag...">
+</div>
+<div id="tags"></div>
+<div id="list"></div>
+
+<button id="fab" aria-label="Ajouter un lien">
+  <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+</button>
+
+<div id="backdrop"></div>
+
+<!-- Feuille : ajouter / modifier -->
+<div class="sheet" id="sheet-add" role="dialog" aria-label="Lien">
+  <div class="grip"></div>
+  <h2 id="sheet-add-title">Nouveau lien</h2>
+  <input class="field" id="f-url" placeholder="https://..." inputmode="url" autocapitalize="off" autocorrect="off">
+  <input class="field" id="f-title" placeholder="Titre (ex: Repo Lecture)">
+  <input class="field" id="f-tags" placeholder="Tags, séparés par des virgules" autocapitalize="off">
+  <textarea class="field" id="f-note" placeholder="Note (optionnel)"></textarea>
+  <div class="row">
+    <button class="btn" id="btn-cancel">Annuler</button>
+    <button class="btn pri" id="btn-save">Ajouter</button>
+  </div>
+</div>
+
+<!-- Feuille : import / sauvegarde -->
+<div class="sheet" id="sheet-more" role="dialog" aria-label="Import et sauvegarde">
+  <div class="grip"></div>
+  <h2>Import et sauvegarde</h2>
+  <h3>Importer depuis GitHub</h3>
+  <p>Récupère tes repos publics, avec le lien du site GitHub Pages quand il existe. Les doublons sont ignorés.</p>
+  <div class="row">
+    <input class="field" id="gh-user" placeholder="Ton pseudo GitHub" autocapitalize="off" autocorrect="off" style="margin-bottom:0">
+    <button class="btn pri" id="btn-gh" style="flex:none">Importer</button>
+  </div>
+  <h3>Sauvegarde</h3>
+  <p>Exporte tes liens dans un fichier JSON, ou récupère-les depuis un fichier.</p>
+  <div class="row">
+    <button class="btn" id="btn-export">Exporter</button>
+    <button class="btn" id="btn-import">Importer un fichier</button>
+  </div>
+  <input type="file" id="file" accept=".json" style="display:none">
+</div>
+
+<script>
+const KEY = "indexeur-liens-v1";
+let links = [];
+let activeTag = null;
+let editingId = null;
+
+const $ = id => document.getElementById(id);
+
+// --- Erreurs visibles à l'écran (pas de console sur téléphone) ---
+function showError(msg) {
+  const e = $("err");
+  e.style.display = "block";
+  e.innerHTML = '<button aria-label="Fermer">×</button>';
+  e.appendChild(document.createTextNode("⚠️ " + msg));
+  e.querySelector("button").onclick = () => e.style.display = "none";
+}
+window.onerror = (m, src, line) => showError(m + " (ligne " + line + ")");
+window.onunhandledrejection = ev => showError("Promesse rejetée : " + (ev.reason && ev.reason.message || ev.reason));
+
+// --- Stockage ---
+function load() {
+  try {
+    links = JSON.parse(localStorage.getItem(KEY) || "[]");
+  } catch (err) {
+    showError("Lecture du stockage impossible : " + err.message);
+    links = [];
+  }
+}
+function save() {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(links));
+  } catch (err) {
+    showError("Sauvegarde impossible : " + err.message);
+  }
+}
+
+// --- Utilitaires ---
+function normUrl(u) {
+  u = u.trim();
+  if (!u) return "";
+  if (!/^https?:\/\//i.test(u)) u = "https://" + u;
+  return u;
+}
+function parseTags(s) {
+  return s.split(",").map(t => t.trim().toLowerCase()).filter(Boolean);
+}
+function esc(s) {
+  return s.replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+}
+function hostOf(u) {
+  try { return new URL(u).hostname.replace(/^www\./, ""); } catch { return u; }
+}
+function pathOf(u) {
+  try { const x = new URL(u); return hostOf(u) + (x.pathname === "/" ? "" : x.pathname); } catch { return u; }
+}
+
+// --- Feuilles ---
+function openSheet(id) {
+  $("backdrop").style.display = "block";
+  $(id).classList.add("open");
+}
+function closeSheets() {
+  $("backdrop").style.display = "none";
+  document.querySelectorAll(".sheet").forEach(s => s.classList.remove("open"));
+}
+$("backdrop").onclick = () => { closeSheets(); resetForm(); };
+$("btn-more").onclick = () => openSheet("sheet-more");
+$("fab").onclick = () => { resetForm(); openSheet("sheet-add"); setTimeout(() => $("f-url").focus(), 280); };
+
+// --- Ajout / modif ---
+function resetForm() {
+  editingId = null;
+  $("f-title").value = $("f-url").value = $("f-tags").value = $("f-note").value = "";
+  $("btn-save").textContent = "Ajouter";
+  $("sheet-add-title").textContent = "Nouveau lien";
+}
+$("btn-cancel").onclick = () => { closeSheets(); resetForm(); };
+$("btn-save").onclick = () => {
+  const url = normUrl($("f-url").value);
+  if (!url) return showError("L'URL est vide.");
+  try { new URL(url); } catch { return showError("URL invalide : " + url); }
+  const title = $("f-title").value.trim() || pathOf(url);
+  const item = { title, url, tags: parseTags($("f-tags").value), note: $("f-note").value.trim() };
+  if (editingId) {
+    const i = links.findIndex(l => l.id === editingId);
+    if (i >= 0) links[i] = { ...links[i], ...item };
+  } else {
+    if (links.some(l => l.url === url)) return showError("Ce lien existe déjà.");
+    links.unshift({ id: Date.now() + "-" + Math.random().toString(36).slice(2, 6), added: Date.now(), ...item });
+  }
+  $("err").style.display = "none";
+  save(); closeSheets(); resetForm(); render();
+};
+
+function edit(id) {
+  const l = links.find(x => x.id === id);
+  if (!l) return;
+  editingId = id;
+  $("f-title").value = l.title; $("f-url").value = l.url;
+  $("f-tags").value = l.tags.join(", "); $("f-note").value = l.note;
+  $("btn-save").textContent = "Enregistrer";
+  $("sheet-add-title").textContent = "Modifier le lien";
+  openSheet("sheet-add");
+}
+function del(id) {
+  if (!confirm("Supprimer ce lien ?")) return;
+  links = links.filter(l => l.id !== id);
+  save(); render();
+}
+async function copy(url, btn) {
+  try {
+    await navigator.clipboard.writeText(url);
+    const old = btn.innerHTML; btn.textContent = "Copié ✓";
+    setTimeout(() => btn.innerHTML = old, 1200);
+  } catch (err) {
+    showError("Copie impossible : " + err.message + "\nLien : " + url);
+  }
+}
+
+// --- Affichage ---
+const ICON = {
+  open: '<svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg>',
+  copy: '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>',
+  edit: '<svg viewBox="0 0 24 24"><path d="M4 20h4l10-10-4-4L4 16z"/></svg>',
+  del:  '<svg viewBox="0 0 24 24"><path d="M5 7h14M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>'
+};
+
+function render() {
+  const q = $("search").value.trim().toLowerCase();
+  const allTags = [...new Set(links.flatMap(l => l.tags))].sort();
+  if (activeTag && !allTags.includes(activeTag)) activeTag = null;
+
+  $("tags").innerHTML = allTags.length
+    ? [`<button class="tag ${activeTag === null ? "on" : ""}" data-tag="">Tous</button>`]
+        .concat(allTags.map(t => `<button class="tag ${t === activeTag ? "on" : ""}" data-tag="${esc(t)}">${esc(t)}</button>`)).join("")
+    : "";
+  $("tags").querySelectorAll(".tag").forEach(el => el.onclick = () => {
+    activeTag = el.dataset.tag || null;
+    render();
+  });
+
+  const shown = links.filter(l => {
+    if (activeTag && !l.tags.includes(activeTag)) return false;
+    if (!q) return true;
+    return (l.title + " " + l.url + " " + l.note + " " + l.tags.join(" ")).toLowerCase().includes(q);
+  });
+  $("count").textContent = links.length === 0 ? "Aucun lien"
+    : shown.length === links.length ? links.length + " lien" + (links.length > 1 ? "s" : "")
+    : shown.length + " sur " + links.length;
+
+  const list = $("list");
+  list.innerHTML = "";
+
+  if (!shown.length) {
+    list.innerHTML = links.length
+      ? '<div class="empty"><b>Rien trouvé</b>Essaie un autre mot ou un autre tag.</div>'
+      : '<div class="empty"><b>Ton index est vide</b>Ajoute un lien avec le bouton +, ou importe tes repos depuis le menu ⋯ en haut à droite.</div>';
+    return;
+  }
+
+  shown.forEach(l => {
+    const host = hostOf(l.url);
+    const d = document.createElement("div");
+    d.className = "item";
+    d.innerHTML = `
+      <div class="fav"><img alt="" src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=64"></div>
+      <div class="main">
+        <a href="${esc(l.url)}" target="_blank" rel="noopener">
+          <div class="t">${esc(l.title)}</div>
+          <div class="host">${esc(pathOf(l.url))}</div>
+        </a>
+        ${l.note ? `<div class="n">${esc(l.note)}</div>` : ""}
+        ${l.tags.length ? `<div class="tg">#${l.tags.map(esc).join("  #")}</div>` : ""}
+        <div class="acts">
+          <button class="act go" data-a="open">${ICON.open} Ouvrir</button>
+          <button class="act" data-a="copy" aria-label="Copier le lien">${ICON.copy}</button>
+          <button class="act" data-a="edit" aria-label="Modifier">${ICON.edit}</button>
+          <button class="act danger" data-a="del" aria-label="Supprimer">${ICON.del}</button>
+        </div>
+      </div>`;
+    // Si le favicon ne charge pas : initiale du titre
+    const img = d.querySelector(".fav img");
+    img.onerror = () => { d.querySelector(".fav").textContent = (l.title[0] || "?").toUpperCase(); };
+    d.querySelector('[data-a="open"]').onclick = () => window.open(l.url, "_blank", "noopener");
+    d.querySelector('[data-a="copy"]').onclick = e => copy(l.url, e.currentTarget);
+    d.querySelector('[data-a="edit"]').onclick = () => edit(l.id);
+    d.querySelector('[data-a="del"]').onclick = () => del(l.id);
+    list.appendChild(d);
+  });
+}
+$("search").oninput = render;
+
+// --- Import GitHub ---
+$("btn-gh").onclick = async () => {
+  const user = $("gh-user").value.trim();
+  if (!user) return showError("Entre ton pseudo GitHub.");
+  const btn = $("btn-gh"); btn.disabled = true; btn.textContent = "...";
+  try {
+    let page = 1, added = 0;
+    while (true) {
+      const r = await fetch(`https://api.github.com/users/${encodeURIComponent(user)}/repos?per_page=100&page=${page}`);
+      if (!r.ok) throw new Error("GitHub a répondu " + r.status + (r.status === 404 ? " (pseudo introuvable)" : r.status === 403 ? " (limite d'appels atteinte, réessaie plus tard)" : ""));
+      const repos = await r.json();
+      if (!repos.length) break;
+      for (const repo of repos) {
+        const entries = [{ title: repo.name, url: repo.html_url, tags: ["github", "repo"], note: repo.description || "" }];
+        if (repo.has_pages) {
+          entries.push({ title: repo.name + " (site)", url: `https://${repo.owner.login.toLowerCase()}.github.io/${repo.name}/`, tags: ["github", "pages"], note: repo.description || "" });
+        }
+        for (const e of entries) {
+          if (links.some(l => l.url === e.url)) continue;
+          links.push({ id: Date.now() + "-" + Math.random().toString(36).slice(2, 6), added: Date.now(), ...e });
+          added++;
+        }
+      }
+      if (repos.length < 100) break;
+      page++;
+    }
+    save(); render(); closeSheets();
+    alert(added + " lien(s) ajouté(s).");
+  } catch (err) {
+    showError("Import GitHub échoué : " + err.message);
+  } finally {
+    btn.disabled = false; btn.textContent = "Importer";
+  }
+};
+
+// --- Export / import JSON ---
+$("btn-export").onclick = () => {
+  try {
+    const blob = new Blob([JSON.stringify(links, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "mes-liens.json";
+    a.click();
+  } catch (err) { showError("Export impossible : " + err.message); }
+};
+$("btn-import").onclick = () => $("file").click();
+$("file").onchange = async ev => {
+  try {
+    const f = ev.target.files[0]; if (!f) return;
+    const data = JSON.parse(await f.text());
+    if (!Array.isArray(data)) throw new Error("Le fichier doit contenir une liste de liens.");
+    let added = 0;
+    for (const l of data) {
+      if (!l.url || links.some(x => x.url === l.url)) continue;
+      links.push({ id: l.id || Date.now() + "-" + Math.random().toString(36).slice(2, 6), added: l.added || Date.now(), title: l.title || l.url, url: l.url, tags: l.tags || [], note: l.note || "" });
+      added++;
+    }
+    save(); render(); closeSheets();
+    alert(added + " lien(s) importé(s).");
+  } catch (err) {
+    showError("Import JSON échoué : " + err.message);
+  } finally { ev.target.value = ""; }
+};
+
+load();
+render();
+</script>
+</body>
+</html>
