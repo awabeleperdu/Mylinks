@@ -1,6 +1,6 @@
 // Service worker de Mylinks : permet l'installation et l'ouverture hors connexion.
 // Change CACHE (v1 -> v2...) pour forcer la mise à jour des fichiers en cache.
-const CACHE = "mylinks-v1";
+const CACHE = "mylinks-v2";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
