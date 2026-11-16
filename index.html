@@ -3,114 +3,130 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#ececef" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0e0e10" media="(prefers-color-scheme: dark)">
-<title>Mes liens</title>
+<meta name="theme-color" content="#14090c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mylinks">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Mylinks</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg:#ececef; --surface:#ffffff; --surface2:#f2f2f5; --line:#dcdce1;
-    --txt:#1d1d1f; --mut:#6e6e73; --acc:#1d1d1f; --acc-ink:#ffffff; --err:#d92d3f;
-    --shadow:0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.06);
-    --head:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", system-ui, sans-serif;
-    --body:-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg:#0e0e10; --surface:#1c1c1f; --surface2:#2a2a2e; --line:#38383d;
-      --txt:#f5f5f7; --mut:#98989f; --acc:#f5f5f7; --acc-ink:#111113; --err:#ff6b7a;
-      --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
-    }
+    --bg:#14090c; --surface:#1f1015; --surface2:#2b161d; --line:#3c2029;
+    --txt:#f6ecdc; --mut:#c9b3ad; --acc:#ffc43d; --acc-ink:#1a0c10; --err:#ff9a9a;
+    --shadow:0 10px 30px rgba(0,0,0,.4);
+    --head:"Bowlby One", system-ui, sans-serif;
+    --body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
   }
   * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   [hidden] { display:none !important; }
-  html { background:var(--bg); background-image:radial-gradient(900px 420px at 50% -120px, color-mix(in srgb, var(--surface) 90%, transparent), transparent); background-repeat:no-repeat; }
+  html { background:var(--bg); color-scheme:dark; }
   body {
-    margin:0; font-family:var(--body); color:var(--txt); background:var(--bg);
-    max-width:720px; margin-inline:auto; padding:0 16px 110px; line-height:1.45;
+    margin:0; font-family:var(--body); color:var(--txt); background:var(--bg); line-height:1.45;
+    padding:env(safe-area-inset-top) 0 calc(110px + env(safe-area-inset-bottom));
   }
+  #app { max-width:720px; margin-inline:auto; }
   button, input, textarea, select { font:inherit; color:inherit; }
   button { cursor:pointer; border:0; background:none; }
+  a { color:inherit; text-decoration:none; }
   :focus-visible { outline:2px solid var(--acc); outline-offset:2px; }
 
   /* Erreurs : toujours visibles en haut */
   #err {
-    display:none; position:fixed; z-index:50; top:10px; left:10px; right:10px; max-width:700px; margin-inline:auto;
-    background:var(--surface); border:1px solid var(--err); color:var(--err); padding:12px 14px; border-radius:18px;
+    display:none; position:fixed; z-index:60; top:calc(10px + env(safe-area-inset-top)); left:10px; right:10px; max-width:700px; margin-inline:auto;
+    background:#2b1014; border:1px solid var(--err); color:var(--err); padding:12px 14px; border-radius:18px;
     font-size:13px; white-space:pre-wrap; word-break:break-word; box-shadow:var(--shadow);
   }
   #err button { float:right; color:var(--err); font-size:18px; line-height:1; padding:0 0 0 12px; }
 
-  /* En-tête */
-  header { display:flex; align-items:flex-end; justify-content:space-between; gap:12px; padding:30px 0 18px; }
-  .hl { display:flex; align-items:center; gap:12px; min-width:0; }
-  h1 { font-family:var(--head); font-weight:700; font-size:40px; letter-spacing:-0.045em; line-height:1; margin:0; overflow-wrap:anywhere; }
-  #count { color:var(--mut); font-size:14px; margin-top:8px; }
-  .icon-btn { flex:none; width:44px; height:44px; display:grid; place-items:center; border-radius:50%; background:var(--surface); border:1px solid var(--line); box-shadow:var(--shadow); }
-  .icon-btn svg, .act svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-
-  /* Recherche */
-  .search { position:relative; }
-  .search svg { position:absolute; left:16px; top:50%; transform:translateY(-50%); width:18px; height:18px; stroke:var(--mut); fill:none; stroke-width:2; stroke-linecap:round; }
-  #search {
-    width:100%; padding:14px 18px 14px 44px; border-radius:16px; border:1px solid var(--line);
-    background:var(--surface); font-size:16px; box-shadow:var(--shadow);
-  }
+  /* Barre du haut */
+  .top { display:flex; align-items:center; justify-content:space-between; padding:22px 16px 14px; gap:8px; }
+  .logo { display:flex; align-items:center; gap:10px; font-family:var(--head); font-size:24px; color:var(--acc); line-height:1; }
+  .tools { display:flex; align-items:center; gap:8px; }
+  .round { width:44px; height:44px; border-radius:50%; background:var(--surface2); display:grid; place-items:center; flex:none; overflow:hidden; }
+  .round svg { width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .round img { width:100%; height:100%; object-fit:cover; }
+  .round.me { border:2px solid var(--acc); color:var(--acc); font-weight:700; font-size:16px; }
+  .pill { height:44px; padding:0 14px; border-radius:99px; background:var(--surface2); color:var(--acc); font-weight:600; font-size:14px; }
+  .searchbar { padding:0 16px 8px; }
+  #search { width:100%; height:48px; padding:0 18px; border-radius:16px; border:1px solid var(--line); background:var(--surface); font-size:16px; }
   #search::placeholder { color:var(--mut); }
 
-  /* Blocs (catégories) */
-  .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px; }
-  .block {
-    text-align:left; min-height:132px; padding:16px; border-radius:26px; background:var(--surface);
-    border:1px solid var(--line); box-shadow:var(--shadow); display:flex; flex-direction:column; justify-content:space-between;
-  }
-  .block:active { transform:scale(.98); }
-  .block .ico { width:40px; height:40px; border-radius:13px; background:var(--surface2); border:1px solid var(--line); display:grid; place-items:center; color:var(--mut); }
-  .block .ico svg { width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
-  .bname { font-family:var(--head); font-weight:600; font-size:17px; letter-spacing:-0.02em; margin-top:14px; overflow-wrap:anywhere; }
-  .bn { color:var(--mut); font-size:13px; }
-  .block.new { background:transparent; box-shadow:none; border:1.5px dashed var(--line); align-items:center; justify-content:center; color:var(--mut); gap:6px; text-align:center; }
-  .block.new svg { width:24px; height:24px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; }
+  /* Grande affiche */
+  .hero { position:relative; margin:0 16px; height:430px; border-radius:28px; overflow:hidden; background:linear-gradient(180deg,#a3182a 0%,#5c0f1c 48%,#14090c 100%); }
+  .folds { position:absolute; inset:0; background:repeating-linear-gradient(90deg,rgba(0,0,0,.20) 0 22px,rgba(255,255,255,.05) 22px 44px); }
+  .hero .bar { position:absolute; left:0; right:0; top:0; height:14px; background:var(--acc); opacity:.9; }
+  .hero .art { position:absolute; left:50%; top:34px; transform:translateX(-50%); }
+  .hero .fade { position:absolute; left:0; right:0; bottom:0; height:230px; background:linear-gradient(180deg,rgba(20,9,12,0) 0%,#14090c 78%); }
+  .hero .txt { position:absolute; left:20px; right:20px; bottom:22px; display:flex; flex-direction:column; gap:12px; }
+  .hero h1 { margin:0; font-family:var(--head); font-weight:400; font-size:40px; line-height:1; color:#fff1d0; overflow-wrap:anywhere; }
+  .hero p { margin:0; font-size:15px; line-height:1.4; color:#d9c3bb; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .btns { display:flex; gap:10px; margin-top:4px; flex-wrap:wrap; }
+  .cta { height:48px; padding:0 20px; border-radius:14px; background:var(--acc); color:var(--acc-ink); font-weight:700; font-size:16px; display:inline-flex; align-items:center; gap:10px; }
+  .cta.ghost { background:rgba(255,241,208,.16); color:#fff1d0; font-weight:600; }
+  .cta svg { width:16px; height:16px; }
 
-  .cat-actions { display:flex; gap:8px; margin-top:14px; }
+  /* Rangées */
+  section.sec { margin-top:30px; }
+  h2.st { margin:0 16px 14px; font-size:20px; font-weight:700; letter-spacing:-.01em; }
+  .row { display:flex; gap:12px; overflow-x:auto; padding:0 16px; scrollbar-width:none; }
+  .row::-webkit-scrollbar { display:none; }
+  .poster { flex:none; width:136px; height:204px; border-radius:20px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; text-align:left; }
+  .poster:active { transform:scale(.97); }
+  .poster .pi svg { width:34px; height:34px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+  .pt { display:block; font-family:var(--head); font-size:18px; line-height:1.05; overflow-wrap:anywhere; }
+  .pn { display:block; font-size:13px; margin-top:6px; }
+  .poster.new { background:transparent; border:2px dashed #5b3a42; align-items:center; justify-content:center; gap:10px; color:var(--mut); font-size:14px; font-weight:600; text-align:center; }
+  .poster.new svg { width:30px; height:30px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; }
+  .rec { flex:none; width:210px; }
+  .rec .thumb { height:118px; }
 
-  /* Tags */
-  #tags { display:flex; gap:8px; overflow-x:auto; padding:14px 0 6px; scrollbar-width:none; }
+  /* Vignettes et cartes de liens */
+  .thumb { display:block; border-radius:16px; border:1px solid; position:relative; overflow:hidden; }
+  .thumb .big { position:absolute; right:-6px; bottom:-26px; font-family:var(--head); font-size:110px; line-height:1; opacity:.5; }
+  .thumb .nm { position:absolute; left:12px; bottom:12px; right:12px; font-weight:700; font-size:16px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .rec .h { font-size:13px; color:var(--mut); margin-top:8px; padding-left:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .cards { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px 12px; padding:16px; }
+  @media (min-width:560px) { .cards { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+  .card { position:relative; min-width:0; }
+  .card .thumb { height:96px; }
+  .card .thumb .big { font-size:100px; right:-4px; bottom:-24px; }
+  .card .more { position:absolute; top:4px; right:4px; width:40px; height:40px; border-radius:50%; display:grid; place-items:center; background:rgba(20,9,12,.6); color:#fff1d0; }
+  .card .more svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; }
+  .card .t { font-weight:700; font-size:15px; margin-top:8px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .card .h { font-size:12px; color:var(--mut); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+  /* Bandeau d'une catégorie */
+  .banner { position:relative; height:190px; padding:18px 16px 0; background:linear-gradient(180deg,#a3182a 0%,#5c0f1c 60%,#14090c 100%); overflow:hidden; }
+  .banner .art { position:absolute; right:14px; top:34px; }
+  .banner .in { position:relative; display:flex; flex-direction:column; gap:14px; }
+  .banner .brow { display:flex; gap:8px; }
+  .banner .round { background:rgba(20,9,12,.55); color:#fff1d0; }
+  .banner h1 { margin:0; font-family:var(--head); font-weight:400; font-size:32px; line-height:1; color:#fff1d0; max-width:230px; overflow-wrap:anywhere; }
+  .banner .c { font-size:14px; color:#e6cfc6; margin-top:8px; }
+  #tags { display:flex; gap:8px; overflow-x:auto; padding:6px 16px 4px; scrollbar-width:none; }
   #tags::-webkit-scrollbar { display:none; }
-  .tag { flex:none; padding:7px 14px; border-radius:99px; font-size:14px; color:var(--mut); background:var(--surface); border:1px solid var(--line); }
-  .tag.on { background:var(--acc); border-color:var(--acc); color:var(--acc-ink); font-weight:500; }
+  .tag { flex:none; height:40px; padding:0 18px; border-radius:99px; border:1px solid #4a2a33; color:#e6cfc6; font-weight:600; font-size:14px; }
+  .tag.on { background:var(--acc); border-color:var(--acc); color:var(--acc-ink); font-weight:700; }
 
-  /* Liste */
-  #list { margin-top:10px; }
-  .item { display:grid; grid-template-columns:48px 1fr; gap:14px; padding:16px; margin-bottom:12px; background:var(--surface); border:1px solid var(--line); border-radius:24px; box-shadow:var(--shadow); }
-  .fav {
-    width:48px; height:48px; border-radius:15px; background:var(--surface2); border:1px solid var(--line); display:grid; place-items:center;
-    font-family:var(--head); font-weight:600; font-size:20px; color:var(--mut); overflow:hidden;
-  }
-  .fav img { width:26px; height:26px; }
-  .main { min-width:0; }
-  .main a { display:block; text-decoration:none; color:inherit; }
-  .t { font-family:var(--head); font-weight:600; font-size:17px; letter-spacing:-0.02em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .host { color:var(--mut); font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .n { margin-top:6px; font-size:14px; color:var(--txt); opacity:.8; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-  .tg { margin-top:6px; font-size:13px; color:var(--mut); }
-  .acts { display:flex; gap:6px; margin-top:10px; }
-  .act { height:36px; min-width:36px; padding:0 12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border-radius:99px; background:var(--surface2); border:1px solid var(--line); font-size:13px; color:var(--mut); }
-  .act.go { background:var(--acc); border-color:var(--acc); color:var(--acc-ink); font-weight:500; }
-  .act.danger:active { color:var(--err); border-color:var(--err); }
+  .empty { text-align:center; color:var(--mut); padding:50px 24px; }
+  .empty b { display:block; font-family:var(--head); font-weight:400; font-size:22px; color:var(--txt); margin-bottom:8px; }
 
-  .empty { text-align:center; color:var(--mut); padding:60px 20px; }
-  .empty b { display:block; font-family:var(--head); font-size:22px; color:var(--txt); margin-bottom:6px; }
+  /* Navigation du bas */
+  #nav { position:fixed; left:0; right:0; bottom:0; z-index:15; max-width:720px; margin-inline:auto; height:calc(84px + env(safe-area-inset-bottom)); padding:0 10px env(safe-area-inset-bottom); display:flex; align-items:center; justify-content:space-around; background:#1d0e13; border-top:1px solid #34202a; }
+  #nav .nb { width:72px; display:flex; flex-direction:column; align-items:center; gap:4px; color:var(--mut); font-size:12px; font-weight:600; }
+  #nav .nb svg { width:24px; height:24px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  #nav .nb.on { color:var(--acc); }
+  #nav .add { width:56px; height:56px; border-radius:50%; background:var(--acc); color:var(--acc-ink); display:grid; place-items:center; margin-top:-18px; box-shadow:0 8px 22px rgba(255,196,61,.3); }
+  #nav .add svg { width:26px; height:26px; stroke:currentColor; fill:none; stroke-width:2.6; stroke-linecap:round; }
 
-  /* Bouton + */
-  #fab {
-    position:fixed; right:18px; bottom:calc(18px + env(safe-area-inset-bottom)); z-index:10;
-    width:60px; height:60px; border-radius:50%; background:var(--acc); color:var(--acc-ink);
-    display:grid; place-items:center; box-shadow:0 10px 30px rgba(0,0,0,.28);
-  }
-  #fab svg { width:26px; height:26px; stroke:currentColor; fill:none; stroke-width:2.6; stroke-linecap:round; }
-
-  /* Feuilles (formulaires) */
-  #backdrop { position:fixed; inset:0; background:rgba(0,0,0,.35); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); z-index:20; display:none; }
+  /* Feuilles */
+  #backdrop { position:fixed; inset:0; background:rgba(0,0,0,.5); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); z-index:20; display:none; }
   .sheet {
     position:fixed; left:0; right:0; bottom:0; z-index:30; max-width:720px; margin-inline:auto;
     background:var(--surface); border-radius:32px 32px 0 0; border:1px solid var(--line); border-bottom:0; box-shadow:var(--shadow);
@@ -119,31 +135,40 @@
   }
   .sheet.open { transform:none; visibility:visible; }
   .grip { width:40px; height:4px; border-radius:4px; background:var(--line); margin:4px auto 14px; }
-  .sheet h2 { font-family:var(--head); font-weight:700; font-size:24px; letter-spacing:-0.035em; margin:0 0 14px; }
-  .sheet h3 { font-family:var(--head); font-size:16px; margin:22px 0 4px; display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .sheet h2 { font-family:var(--head); font-weight:400; font-size:24px; margin:0 0 14px; }
+  .sheet h3 { font-size:16px; font-weight:700; margin:22px 0 4px; display:flex; align-items:center; justify-content:space-between; gap:8px; }
   .sheet p { color:var(--mut); font-size:13px; margin:0 0 10px; }
   .field { width:100%; padding:13px 14px; border-radius:14px; border:1px solid var(--line); background:var(--surface2); font-size:16px; margin-bottom:10px; }
   .field::placeholder { color:var(--mut); }
   textarea.field { resize:vertical; min-height:70px; }
-  .row { display:flex; gap:10px; }
-  .row > * { flex:1; }
-  .btn { padding:14px 16px; border-radius:16px; background:var(--surface2); border:1px solid var(--line); font-weight:500; }
-  .btn.pri { background:var(--acc); border-color:var(--acc); color:var(--acc-ink); }
+  .row2 { display:flex; gap:10px; }
+  .row2 > * { flex:1; }
+  .btn { padding:14px 16px; border-radius:16px; background:var(--surface2); border:1px solid var(--line); font-weight:600; }
+  .btn.pri { background:var(--acc); border-color:var(--acc); color:var(--acc-ink); font-weight:700; }
   .btn.sm { padding:7px 12px; border-radius:99px; font-size:13px; flex:none; }
   .btn.danger { color:var(--err); }
   .btn:disabled { opacity:.5; }
   .mini { display:flex; gap:6px; }
-  .link-btn { color:var(--mut); font-size:13px; text-decoration:underline; padding:8px 12px 4px 0; }
   .acc-status { color:var(--mut); font-size:13px; margin:2px 0 12px; }
+  .who { display:flex; align-items:center; gap:12px; margin-bottom:6px; }
+  .who .round { width:48px; height:48px; }
+  .who small { color:var(--mut); }
+  .list-btn { display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:15px 4px; border-bottom:1px solid var(--line); font-weight:600; font-size:16px; }
+  .list-btn svg { width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex:none; }
+  .list-btn.danger { color:var(--err); }
+  .act-head { margin-bottom:6px; }
+  .act-head .u { color:var(--mut); font-size:13px; overflow-wrap:anywhere; }
+  .act-head .n { font-size:14px; margin-top:6px; }
 
   /* Sélection à l'import */
   .chk { display:flex; gap:12px; align-items:flex-start; padding:11px 0; border-bottom:1px solid var(--line); cursor:pointer; }
   .chk input { flex:none; width:22px; height:22px; margin:1px 0 0; accent-color:var(--acc); }
-  .chk .ct { display:block; font-weight:500; overflow-wrap:anywhere; }
+  .chk .ct { display:block; font-weight:600; overflow-wrap:anywhere; }
   .chk small { display:block; color:var(--mut); font-size:12px; overflow-wrap:anywhere; }
   .chk.dis { opacity:.45; cursor:default; }
   .sticky { position:sticky; bottom:-22px; background:var(--surface); padding:14px 0 4px; margin-top:6px; }
 
+  select.field option { background:#2b161d; color:#f6ecdc; }
   @media (prefers-reduced-motion: reduce) { .sheet { transition:none; } }
 </style>
 </head>
@@ -151,38 +176,75 @@
 
 <div id="err"></div>
 
-<header>
-  <div class="hl">
-    <button class="icon-btn" id="btn-back" aria-label="Retour" hidden>
-      <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
-    </button>
-    <div>
-      <h1 id="title">Mes liens</h1>
-      <div id="count"></div>
+<div id="app">
+  <header class="top" id="top">
+    <div class="logo">
+      <svg width="30" height="33" viewBox="0 0 200 220" aria-hidden="true">
+        <defs><clipPath id="lg-body"><path d="M40 92 L160 92 L146 208 Q145 214 139 214 L61 214 Q55 214 54 208 Z"/></clipPath></defs>
+        <g fill="#fff1d0"><circle cx="68" cy="66" r="24"/><circle cx="100" cy="50" r="28"/><circle cx="134" cy="66" r="24"/><circle cx="50" cy="84" r="17"/><circle cx="152" cy="84" r="17"/></g>
+        <g fill="#ffc43d"><circle cx="88" cy="40" r="12"/><circle cx="122" cy="34" r="11"/><circle cx="72" cy="76" r="10"/></g>
+        <g clip-path="url(#lg-body)"><rect x="36" y="92" width="24" height="124" fill="#fff1d0"/><rect x="60" y="92" width="24" height="124" fill="#c1272d"/><rect x="84" y="92" width="24" height="124" fill="#fff1d0"/><rect x="108" y="92" width="24" height="124" fill="#c1272d"/><rect x="132" y="92" width="30" height="124" fill="#fff1d0"/></g>
+        <rect x="32" y="84" width="136" height="14" rx="7" fill="#8f1b22"/>
+      </svg>
+      <span>Mylinks</span>
     </div>
+    <div class="tools">
+      <button class="pill" id="btn-install" hidden>Installer</button>
+      <button class="round" id="btn-search" aria-label="Rechercher">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      </button>
+      <button class="round" id="btn-acc" aria-label="Réglages et compte"></button>
+    </div>
+  </header>
+
+  <div class="searchbar" id="searchbar" hidden>
+    <input id="search" type="search" placeholder="Rechercher dans tous les liens..." autocomplete="off">
   </div>
-  <button class="icon-btn" id="btn-more" aria-label="Import et sauvegarde">
-    <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></svg>
-  </button>
-</header>
 
-<div class="search">
-  <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-  <input id="search" type="search" placeholder="Rechercher dans tous les liens...">
+  <!-- Accueil -->
+  <main id="home">
+    <div id="hero"></div>
+    <section class="sec" id="cats-sec">
+      <h2 class="st">Mes catégories</h2>
+      <div class="row" id="posters"></div>
+    </section>
+    <section class="sec" id="recent-sec">
+      <h2 class="st">Repris récemment</h2>
+      <div class="row" id="recent"></div>
+    </section>
+  </main>
+
+  <!-- Une catégorie -->
+  <section id="catview" hidden>
+    <header class="banner">
+      <div class="folds"></div>
+      <div class="art" id="banner-art"></div>
+      <div class="in">
+        <div class="brow">
+          <button class="round" id="btn-back" aria-label="Retour aux catégories"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <button class="round" id="btn-catmore" aria-label="Options de la catégorie"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg></button>
+        </div>
+        <div><h1 id="cat-title"></h1><div class="c" id="cat-count"></div></div>
+      </div>
+    </header>
+    <div id="tags"></div>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <!-- Résultats de recherche -->
+  <section id="results" hidden>
+    <h2 class="st" id="res-title" style="margin-top:8px"></h2>
+    <div class="cards" id="res-cards"></div>
+  </section>
 </div>
 
-<div id="cat-actions" class="cat-actions" hidden>
-  <button class="btn sm" id="btn-rename">Renommer</button>
-  <button class="btn sm danger" id="btn-delcat">Supprimer la catégorie</button>
-</div>
-
-<div id="tags"></div>
-<div id="grid" class="grid"></div>
-<div id="list"></div>
-
-<button id="fab" aria-label="Ajouter un lien">
-  <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-</button>
+<nav id="nav" aria-label="Navigation">
+  <button class="nb" id="nav-home"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z"/></svg>Accueil</button>
+  <button class="nb" id="nav-cats"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>Catégories</button>
+  <button class="add" id="nav-add" aria-label="Ajouter un lien"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+  <button class="nb" id="nav-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Recherche</button>
+  <button class="nb" id="nav-acc"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4.5-6 8-6s7 2 8 6"/></svg>Compte</button>
+</nav>
 
 <div id="backdrop"></div>
 
@@ -195,27 +257,51 @@
   <select class="field" id="f-cat" aria-label="Catégorie"></select>
   <input class="field" id="f-tags" placeholder="Tags, séparés par des virgules" autocapitalize="off">
   <textarea class="field" id="f-note" placeholder="Note (optionnel)"></textarea>
-  <div class="row">
+  <div class="row2">
     <button class="btn" id="btn-cancel">Annuler</button>
     <button class="btn pri" id="btn-save">Ajouter</button>
   </div>
 </div>
 
-<!-- Feuille : import / sauvegarde -->
-<div class="sheet" id="sheet-more" role="dialog" aria-label="Import et sauvegarde">
+<!-- Feuille : actions sur un lien -->
+<div class="sheet" id="sheet-act" role="dialog" aria-label="Actions sur le lien">
+  <div class="grip"></div>
+  <div class="act-head">
+    <h2 id="act-title" style="margin-bottom:4px;overflow-wrap:anywhere"></h2>
+    <div class="u" id="act-url"></div>
+    <div class="n" id="act-note"></div>
+  </div>
+  <button class="list-btn" id="act-open"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg>Ouvrir</button>
+  <button class="list-btn" id="act-copy"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><span>Copier le lien</span></button>
+  <button class="list-btn" id="act-edit"><svg viewBox="0 0 24 24"><path d="M4 20h4l10-10-4-4L4 16z"/></svg>Modifier</button>
+  <button class="list-btn danger" id="act-del"><svg viewBox="0 0 24 24"><path d="M5 7h14M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>Supprimer</button>
+</div>
+
+<!-- Feuille : options de catégorie -->
+<div class="sheet" id="sheet-cat" role="dialog" aria-label="Options de la catégorie">
+  <div class="grip"></div>
+  <h2 id="catopt-title"></h2>
+  <button class="list-btn" id="catopt-rename"><svg viewBox="0 0 24 24"><path d="M4 20h4l10-10-4-4L4 16z"/></svg>Renommer</button>
+  <button class="list-btn danger" id="catopt-del"><svg viewBox="0 0 24 24"><path d="M5 7h14M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>Supprimer la catégorie</button>
+</div>
+
+<!-- Feuille : réglages -->
+<div class="sheet" id="sheet-more" role="dialog" aria-label="Réglages">
   <div class="grip"></div>
   <h2>Réglages</h2>
   <h3 style="margin-top:4px">Compte</h3>
   <div id="acc-box"></div>
+  <h3>Installer l'appli</h3>
+  <div id="inst-box"></div>
   <h3>Importer depuis GitHub</h3>
   <p>Récupère tes repos publics, puis tu choisis ceux que tu veux garder.</p>
-  <div class="row">
+  <div class="row2">
     <input class="field" id="gh-user" placeholder="Ton pseudo GitHub" autocapitalize="off" autocorrect="off" style="margin-bottom:0">
     <button class="btn pri" id="btn-gh" style="flex:none">Chercher</button>
   </div>
   <h3>Sauvegarde</h3>
   <p>Exporte tes liens (avec leurs catégories) dans un fichier JSON, ou récupère-les depuis un fichier.</p>
-  <div class="row">
+  <div class="row2">
     <button class="btn" id="btn-export">Exporter</button>
     <button class="btn" id="btn-import">Importer un fichier</button>
   </div>
@@ -246,6 +332,12 @@
 </div>
 
 <script>
+// ============================================================
+//  CONFIG FIREBASE (compte Google + synchronisation)
+//  Laisse null tant que le projet Firebase n'est pas créé.
+// ============================================================
+const FIREBASE_CONFIG = null;
+
 const KEY = "indexeur-liens-v1";
 const CKEY = "indexeur-cats-v1";
 let links = [];
@@ -253,6 +345,7 @@ let cats = [];
 let view = null;        // null = accueil, "none" = sans catégorie, sinon id de catégorie
 let activeTag = null;
 let editingId = null;
+let actId = null;
 let ghItems = [];
 
 const $ = id => document.getElementById(id);
@@ -284,12 +377,48 @@ function hostOf(u) { try { return new URL(u).hostname.replace(/^www\./, ""); } c
 function pathOf(u) {
   try { const x = new URL(u); return hostOf(u) + (x.pathname === "/" ? "" : x.pathname); } catch { return u; }
 }
+function plural(n, one, many) { return n + " " + (n > 1 ? many : one); }
 function catName(id) {
   if (!id) return "Sans catégorie";
   const c = cats.find(c => c.id === id);
   return c ? c.name : "Sans catégorie";
 }
-function plural(n, one, many) { return n + " " + (n > 1 ? many : one); }
+function catItems(id) {
+  return links.filter(l => id === "none" ? (!l.cat || !cats.some(c => c.id === l.cat)) : l.cat === id);
+}
+
+// --- Couleurs et icônes des catégories ---
+const TINTS = [
+  { a:"#d33a3f", b:"#8f1b22", ink:"#fff1d0", sub:"#ffe3c7", bg1:"#3a1a24", bg2:"#2a1219", br:"#3c2029" },
+  { a:"#25a6a6", b:"#14606a", ink:"#f2fffd", sub:"#d3f5f0", bg1:"#102f35", bg2:"#0f2227", br:"#1d4249" },
+  { a:"#ffcf5c", b:"#e0951a", ink:"#2a1604", sub:"#4a2a08", bg1:"#3a2c0c", bg2:"#291f09", br:"#4d3a10" },
+  { a:"#6a63d6", b:"#3a3590", ink:"#f4f3ff", sub:"#dcdaff", bg1:"#25234f", bg2:"#1a1938", br:"#34316b" }
+];
+const TINT_NONE = { a:"#9a8a88", b:"#4d4140", ink:"#fbf3ee", sub:"#e5d8d2", bg1:"#2c2224", bg2:"#221a1c", br:"#3d3032" };
+function tintOf(catId) {
+  const i = cats.findIndex(c => c.id === catId);
+  return i < 0 ? TINT_NONE : TINTS[i % TINTS.length];
+}
+const ICON = {
+  code:   '<svg viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg>',
+  globe:  '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg>',
+  star:   '<svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>',
+  folder: '<svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+  plus:   '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',
+  play:   '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M6 4l14 8-14 8z"/></svg>',
+  dots:   '<svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg>'
+};
+const CAT_ICONS = { "c-repos": ICON.code, "c-sites": ICON.globe, "c-perso": ICON.star };
+const iconOf = id => CAT_ICONS[id] || ICON.folder;
+
+function bucketSvg(id, w, h, style) {
+  return `<svg width="${w}" height="${h}" viewBox="0 0 200 220" style="${style || ""}" aria-hidden="true">
+    <defs><clipPath id="${id}"><path d="M40 92 L160 92 L146 208 Q145 214 139 214 L61 214 Q55 214 54 208 Z"/></clipPath></defs>
+    <g fill="#fff1d0"><circle cx="68" cy="66" r="24"/><circle cx="100" cy="50" r="28"/><circle cx="134" cy="66" r="24"/><circle cx="50" cy="84" r="17"/><circle cx="152" cy="84" r="17"/><circle cx="84" cy="30" r="15"/><circle cx="118" cy="26" r="14"/></g>
+    <g fill="#ffc43d"><circle cx="88" cy="40" r="12"/><circle cx="122" cy="34" r="11"/><circle cx="72" cy="76" r="10"/><circle cx="140" cy="74" r="9"/></g>
+    <g clip-path="url(#${id})"><rect x="36" y="92" width="24" height="124" fill="#fff1d0"/><rect x="60" y="92" width="24" height="124" fill="#c1272d"/><rect x="84" y="92" width="24" height="124" fill="#fff1d0"/><rect x="108" y="92" width="24" height="124" fill="#c1272d"/><rect x="132" y="92" width="30" height="124" fill="#fff1d0"/></g>
+    <rect x="32" y="84" width="136" height="14" rx="7" fill="#8f1b22"/></svg>`;
+}
 
 // --- Stockage ---
 const DEFAULT_CATS = [
@@ -311,12 +440,11 @@ function load() {
     if (rawCats) {
       cats = JSON.parse(rawCats);
     } else {
-      // Première fois : catégories par défaut + rangement des anciens liens
       cats = DEFAULT_CATS.map(c => ({ ...c }));
       links.forEach(l => { if (l.cat === undefined) l.cat = catFromTags(l.tags || []); });
       saveCats(); save();
     }
-    links.forEach(l => { if (l.cat === undefined) l.cat = ""; });
+    links.forEach(l => { if (l.cat === undefined) l.cat = ""; if (!l.tags) l.tags = []; if (l.note === undefined) l.note = ""; });
   } catch (err) {
     showError("Lecture du stockage impossible : " + err.message);
     links = []; cats = DEFAULT_CATS.map(c => ({ ...c }));
@@ -343,22 +471,34 @@ function closeSheets() {
   document.querySelectorAll(".sheet").forEach(s => s.classList.remove("open"));
 }
 $("backdrop").onclick = () => { closeSheets(); resetForm(); };
-$("btn-more").onclick = () => openSheet("sheet-more");
-
 function fillCatSelect(sel, selected) {
   sel.innerHTML = '<option value="">Sans catégorie</option>' +
     cats.map(c => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("");
   sel.value = cats.some(c => c.id === selected) ? selected : "";
 }
 
-// --- Navigation / catégories ---
+// --- Navigation ---
 function go(v) {
-  view = v; activeTag = null; $("search").value = "";
+  view = v; activeTag = null;
+  $("search").value = ""; $("searchbar").hidden = true;
   window.scrollTo({ top: 0 });
   render();
 }
+function toggleSearch(on) {
+  $("searchbar").hidden = !on;
+  if (on) { window.scrollTo({ top: 0 }); $("search").focus(); }
+  else { $("search").value = ""; render(); }
+}
+$("btn-search").onclick = () => toggleSearch($("searchbar").hidden);
+$("nav-search").onclick = () => toggleSearch($("searchbar").hidden);
+$("nav-home").onclick = () => go(null);
+$("nav-cats").onclick = () => { go(null); setTimeout(() => $("cats-sec").scrollIntoView({ behavior: "smooth", block: "start" }), 30); };
 $("btn-back").onclick = () => go(null);
+$("btn-acc").onclick = () => openSheet("sheet-more");
+$("nav-acc").onclick = () => openSheet("sheet-more");
+$("search").oninput = render;
 
+// --- Catégories ---
 function addCategory() {
   const name = (prompt("Nom de la nouvelle catégorie ?") || "").trim();
   if (!name) return;
@@ -366,15 +506,22 @@ function addCategory() {
   cats.push({ id: newId("c"), name });
   saveCats(); render();
 }
-$("btn-rename").onclick = () => {
+$("btn-catmore").onclick = () => {
+  if (view === "none" || !cats.some(c => c.id === view)) return showError("Cette catégorie ne peut pas être modifiée.");
+  $("catopt-title").textContent = catName(view);
+  openSheet("sheet-cat");
+};
+$("catopt-rename").onclick = () => {
   const c = cats.find(c => c.id === view); if (!c) return;
+  closeSheets();
   const name = (prompt("Nouveau nom ?", c.name) || "").trim();
   if (!name || name === c.name) return;
   if (cats.some(x => x.id !== c.id && x.name.toLowerCase() === name.toLowerCase())) return showError("Cette catégorie existe déjà.");
   c.name = name; saveCats(); render();
 };
-$("btn-delcat").onclick = () => {
+$("catopt-del").onclick = () => {
   const c = cats.find(c => c.id === view); if (!c) return;
+  closeSheets();
   const n = links.filter(l => l.cat === c.id).length;
   if (!confirm(`Supprimer « ${c.name} » ?` + (n ? `\nLes ${n} lien(s) restent dans ton index, sans catégorie.` : ""))) return;
   links.forEach(l => { if (l.cat === c.id) l.cat = ""; });
@@ -383,12 +530,13 @@ $("btn-delcat").onclick = () => {
 };
 
 // --- Ajout / modif ---
-$("fab").onclick = () => {
+function openAdd(catId) {
   resetForm();
-  fillCatSelect($("f-cat"), view && view !== "none" ? view : "");
+  fillCatSelect($("f-cat"), catId && catId !== "none" ? catId : "");
   openSheet("sheet-add");
   setTimeout(() => $("f-url").focus(), 280);
-};
+}
+$("nav-add").onclick = () => openAdd(view);
 function resetForm() {
   editingId = null;
   $("f-title").value = $("f-url").value = $("f-tags").value = $("f-note").value = "";
@@ -421,122 +569,129 @@ function edit(id) {
   $("f-tags").value = l.tags.join(", "); $("f-note").value = l.note;
   $("btn-save").textContent = "Enregistrer";
   $("sheet-add-title").textContent = "Modifier le lien";
-  openSheet("sheet-add");
+  closeSheets(); openSheet("sheet-add");
 }
 function del(id) {
   if (!confirm("Supprimer ce lien ?")) return;
   links = links.filter(l => l.id !== id);
-  save(); render();
+  save(); closeSheets(); render();
 }
 async function copy(url, btn) {
   try {
     await navigator.clipboard.writeText(url);
-    const old = btn.innerHTML; btn.textContent = "Copié ✓";
-    setTimeout(() => btn.innerHTML = old, 1200);
+    const old = btn.textContent; btn.textContent = "Copié ✓";
+    setTimeout(() => btn.textContent = old, 1200);
   } catch (err) {
     showError("Copie impossible : " + err.message + "\nLien : " + url);
   }
 }
 
-// --- Affichage ---
-const ICON = {
-  open: '<svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg>',
-  copy: '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>',
-  edit: '<svg viewBox="0 0 24 24"><path d="M4 20h4l10-10-4-4L4 16z"/></svg>',
-  del:  '<svg viewBox="0 0 24 24"><path d="M5 7h14M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>',
-  folder: '<svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
-  plus: '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>'
-};
+// --- Actions sur un lien ---
+function openActions(id) {
+  const l = links.find(x => x.id === id); if (!l) return;
+  actId = id;
+  $("act-title").textContent = l.title;
+  $("act-url").textContent = l.url;
+  $("act-note").textContent = l.note || "";
+  openSheet("sheet-act");
+}
+$("act-open").onclick = () => { const l = links.find(x => x.id === actId); if (l) window.open(l.url, "_blank", "noopener"); };
+$("act-copy").onclick = e => { const l = links.find(x => x.id === actId); if (l) copy(l.url, e.currentTarget.querySelector("span")); };
+$("act-edit").onclick = () => edit(actId);
+$("act-del").onclick = () => del(actId);
 
-function renderItems(items, showCat) {
-  const list = $("list");
-  list.innerHTML = "";
-  items.forEach(l => {
-    const host = hostOf(l.url);
-    const d = document.createElement("div");
-    d.className = "item";
-    const meta = [];
-    if (showCat) meta.push(esc(catName(l.cat)));
-    if (l.tags.length) meta.push("#" + l.tags.map(esc).join("  #"));
-    d.innerHTML = `
-      <div class="fav"><img alt="" src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=64"></div>
-      <div class="main">
-        <a href="${esc(l.url)}" target="_blank" rel="noopener">
-          <div class="t">${esc(l.title)}</div>
-          <div class="host">${esc(pathOf(l.url))}</div>
-        </a>
-        ${l.note ? `<div class="n">${esc(l.note)}</div>` : ""}
-        ${meta.length ? `<div class="tg">${meta.join("  ·  ")}</div>` : ""}
-        <div class="acts">
-          <button class="act go" data-a="open">${ICON.open} Ouvrir</button>
-          <button class="act" data-a="copy" aria-label="Copier le lien">${ICON.copy}</button>
-          <button class="act" data-a="edit" aria-label="Modifier">${ICON.edit}</button>
-          <button class="act danger" data-a="del" aria-label="Supprimer">${ICON.del}</button>
-        </div>
-      </div>`;
-    const img = d.querySelector(".fav img");
-    img.onerror = () => { d.querySelector(".fav").textContent = (l.title[0] || "?").toUpperCase(); };
-    d.querySelector('[data-a="open"]').onclick = () => window.open(l.url, "_blank", "noopener");
-    d.querySelector('[data-a="copy"]').onclick = e => copy(l.url, e.currentTarget);
-    d.querySelector('[data-a="edit"]').onclick = () => edit(l.id);
-    d.querySelector('[data-a="del"]').onclick = () => del(l.id);
-    list.appendChild(d);
-  });
+// --- Affichage ---
+function cardEl(l, showCat) {
+  const t = tintOf(l.cat);
+  const d = document.createElement("div");
+  d.className = "card";
+  d.innerHTML = `
+    <a href="${esc(l.url)}" target="_blank" rel="noopener" aria-label="Ouvrir ${esc(l.title)}">
+      <span class="thumb" style="background:linear-gradient(135deg,${t.bg1},${t.bg2});border-color:${t.br}"><span class="big" style="color:${t.a}">${esc((l.title[0] || "?").toUpperCase())}</span></span>
+      <div class="t">${esc(l.title)}</div>
+      <div class="h">${esc(pathOf(l.url))}${showCat ? " · " + esc(catName(l.cat)) : ""}</div>
+    </a>
+    <button class="more" aria-label="Actions sur ${esc(l.title)}">${ICON.dots}</button>`;
+  d.querySelector(".more").onclick = () => openActions(l.id);
+  return d;
+}
+
+function renderHero() {
+  const none = catItems("none");
+  let best = null, bestN = 0;
+  cats.forEach(c => { const n = catItems(c.id).length; if (n > bestN) { best = { id: c.id, name: c.name }; bestN = n; } });
+  if (!best && none.length) best = { id: "none", name: "Sans catégorie" };
+  const items = best ? catItems(best.id) : [];
+  const title = best ? best.name : "Bienvenue";
+  const desc = best
+    ? plural(items.length, "lien", "liens") + " : " + items.slice(0, 3).map(l => l.title).join(", ") + (items.length > 3 ? "…" : "")
+    : "Ajoute ton premier lien ou importe tes repos GitHub.";
+
+  $("hero").innerHTML = `<div class="hero">
+    <div class="folds"></div><div class="bar"></div>
+    <div class="art">${bucketSvg("hero-body", 210, 231)}</div>
+    <div class="fade"></div>
+    <div class="txt">
+      <h1>${esc(title)}</h1>
+      <p>${esc(desc)}</p>
+      <div class="btns">
+        <button class="cta" id="hero-main">${ICON.play}${best ? "Ouvrir" : "Importer GitHub"}</button>
+        <button class="cta ghost" id="hero-add">${ICON.plus.replace("<svg", '<svg fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"')}Ajouter un lien</button>
+      </div>
+    </div>
+  </div>`;
+  $("hero-main").onclick = () => best ? go(best.id) : openSheet("sheet-more");
+  $("hero-add").onclick = () => openAdd(best ? best.id : "");
 }
 
 function renderHome() {
-  const none = links.filter(l => !l.cat || !cats.some(c => c.id === l.cat)).length;
-  const blocks = cats.map(c => ({ id: c.id, name: c.name, n: links.filter(l => l.cat === c.id).length }));
-  if (none) blocks.push({ id: "none", name: "Sans catégorie", n: none });
+  renderHero();
 
-  $("title").textContent = "Mes liens";
-  $("count").textContent = plural(links.length, "lien", "liens") + " · " + plural(cats.length, "catégorie", "catégories");
-
-  const grid = $("grid");
-  grid.innerHTML = "";
+  const posters = $("posters");
+  posters.innerHTML = "";
+  const blocks = cats.map(c => ({ id: c.id, name: c.name, n: catItems(c.id).length }));
+  const nNone = catItems("none").length;
+  if (nNone) blocks.push({ id: "none", name: "Sans catégorie", n: nNone });
   blocks.forEach(b => {
+    const t = tintOf(b.id);
     const el = document.createElement("button");
-    el.className = "block";
-    el.innerHTML = `<span class="ico">${ICON.folder}</span><span><span class="bname" style="display:block">${esc(b.name)}</span><span class="bn">${plural(b.n, "lien", "liens")}</span></span>`;
+    el.className = "poster";
+    el.style.cssText = `background:linear-gradient(160deg,${t.a},${t.b});color:${t.ink}`;
+    el.innerHTML = `<span class="pi">${iconOf(b.id)}</span><span><span class="pt">${esc(b.name)}</span><span class="pn" style="color:${t.sub}">${plural(b.n, "lien", "liens")}</span></span>`;
     el.onclick = () => go(b.id);
-    grid.appendChild(el);
+    posters.appendChild(el);
   });
   const nw = document.createElement("button");
-  nw.className = "block new";
+  nw.className = "poster new";
   nw.innerHTML = `${ICON.plus}<span>Nouvelle catégorie</span>`;
   nw.onclick = addCategory;
-  grid.appendChild(nw);
+  posters.appendChild(nw);
+
+  const rec = [...links].sort((a, b) => (b.added || 0) - (a.added || 0)).slice(0, 8);
+  $("recent-sec").hidden = !rec.length;
+  const row = $("recent");
+  row.innerHTML = "";
+  rec.forEach(l => {
+    const t = tintOf(l.cat);
+    const a = document.createElement("a");
+    a.className = "rec";
+    a.href = l.url; a.target = "_blank"; a.rel = "noopener";
+    a.innerHTML = `<span class="thumb" style="background:linear-gradient(135deg,${t.bg1},${t.bg2});border-color:${t.br}"><span class="big" style="color:${t.a}">${esc((l.title[0] || "?").toUpperCase())}</span><span class="nm">${esc(l.title)}</span></span><div class="h">${esc(pathOf(l.url))}</div>`;
+    row.appendChild(a);
+  });
 }
 
-function render() {
-  const q = $("search").value.trim().toLowerCase();
-  const inCat = view !== null;
-
-  $("btn-back").hidden = !(inCat && !q);
-  $("cat-actions").hidden = !(inCat && view !== "none" && !q);
-  $("grid").hidden = !!(inCat || q);
-  $("tags").hidden = !(inCat && !q);
-  $("list").hidden = !(inCat || q);
-
-  if (q) {
-    // Recherche globale
-    const res = links.filter(l => (l.title + " " + l.url + " " + l.note + " " + l.tags.join(" ") + " " + catName(l.cat)).toLowerCase().includes(q));
-    $("title").textContent = "Recherche";
-    $("count").textContent = plural(res.length, "résultat", "résultats");
-    if (!res.length) $("list").innerHTML = '<div class="empty"><b>Rien trouvé</b>Essaie un autre mot.</div>';
-    else renderItems(res, true);
-    return;
-  }
-
-  if (!inCat) { renderHome(); return; }
-
-  // Vue d'une catégorie
+function renderCat() {
   if (view !== "none" && !cats.some(c => c.id === view)) { view = null; return render(); }
-  const inView = links.filter(l => view === "none" ? (!l.cat || !cats.some(c => c.id === l.cat)) : l.cat === view);
+  const inView = catItems(view);
   const allTags = [...new Set(inView.flatMap(l => l.tags))].sort();
   if (activeTag && !allTags.includes(activeTag)) activeTag = null;
 
-  $("title").textContent = catName(view === "none" ? "" : view);
+  $("cat-title").textContent = catName(view === "none" ? "" : view);
+  $("banner-art").innerHTML = bucketSvg("ban-body", 120, 132);
+  $("btn-catmore").hidden = view === "none";
+
+  $("tags").hidden = !allTags.length;
   $("tags").innerHTML = allTags.length
     ? [`<button class="tag ${activeTag === null ? "on" : ""}" data-tag="">Tous</button>`]
         .concat(allTags.map(t => `<button class="tag ${t === activeTag ? "on" : ""}" data-tag="${esc(t)}">${esc(t)}</button>`)).join("")
@@ -544,15 +699,44 @@ function render() {
   $("tags").querySelectorAll(".tag").forEach(el => el.onclick = () => { activeTag = el.dataset.tag || null; render(); });
 
   const shown = inView.filter(l => !activeTag || l.tags.includes(activeTag));
-  $("count").textContent = shown.length === inView.length ? plural(inView.length, "lien", "liens") : shown.length + " sur " + inView.length;
+  $("cat-count").textContent = shown.length === inView.length ? plural(inView.length, "lien", "liens") : shown.length + " sur " + inView.length;
 
+  const box = $("cards");
+  box.innerHTML = "";
   if (!shown.length) {
-    $("list").innerHTML = inView.length
+    box.style.display = "block";
+    box.innerHTML = inView.length
       ? '<div class="empty"><b>Rien avec ce tag</b>Choisis « Tous » pour tout voir.</div>'
       : '<div class="empty"><b>Catégorie vide</b>Ajoute un lien avec le bouton +.</div>';
-  } else renderItems(shown, false);
+  } else {
+    box.style.display = "";
+    shown.forEach(l => box.appendChild(cardEl(l, false)));
+  }
 }
-$("search").oninput = render;
+
+function render() {
+  const q = $("search").value.trim().toLowerCase();
+  const inCat = view !== null && !q;
+  $("home").hidden = !(view === null && !q);
+  $("catview").hidden = !inCat;
+  $("results").hidden = !q;
+  $("top").hidden = inCat;
+
+  $("nav-home").classList.toggle("on", view === null && !q && $("searchbar").hidden);
+  $("nav-cats").classList.toggle("on", inCat);
+  $("nav-search").classList.toggle("on", !$("searchbar").hidden);
+
+  if (q) {
+    const res = links.filter(l => (l.title + " " + l.url + " " + l.note + " " + l.tags.join(" ") + " " + catName(l.cat)).toLowerCase().includes(q));
+    $("res-title").textContent = plural(res.length, "résultat", "résultats");
+    const box = $("res-cards");
+    box.innerHTML = "";
+    if (!res.length) { box.style.display = "block"; box.innerHTML = '<div class="empty"><b>Rien trouvé</b>Essaie un autre mot.</div>'; }
+    else { box.style.display = ""; res.forEach(l => box.appendChild(cardEl(l, true))); }
+    return;
+  }
+  if (view === null) renderHome(); else renderCat();
+}
 
 // --- Import GitHub : recherche puis sélection ---
 $("btn-gh").onclick = async () => {
@@ -589,7 +773,6 @@ $("btn-gh").onclick = async () => {
     btn.disabled = false; btn.textContent = "Chercher";
   }
 };
-
 function openGhPicker() {
   const exists = it => links.some(l => l.url === it.url);
   const nRepos = ghItems.filter(i => i.kind === "repo").length;
@@ -597,10 +780,8 @@ function openGhPicker() {
   const nEx = ghItems.filter(exists).length;
   $("gh-summary").textContent = `${plural(nRepos, "repo trouvé", "repos trouvés")}, ${plural(nSites, "site", "sites")}` +
     (nEx ? ` · ${nEx} déjà dans ton index` : "") + ". Décoche ce que tu ne veux pas.";
-
   fillCatSelect($("gh-cat-repo"), "c-repos");
   fillCatSelect($("gh-cat-site"), "c-sites");
-
   ["repo", "site"].forEach(kind => {
     const box = $(kind === "repo" ? "gh-repos" : "gh-sites");
     const mine = ghItems.map((it, i) => ({ it, i })).filter(x => x.it.kind === kind);
@@ -623,7 +804,6 @@ $("gh-r-all").onclick = () => setAll("gh-repos", true);
 $("gh-r-none").onclick = () => setAll("gh-repos", false);
 $("gh-s-all").onclick = () => setAll("gh-sites", true);
 $("gh-s-none").onclick = () => setAll("gh-sites", false);
-
 function updateGhCount() {
   const n = document.querySelectorAll("#sheet-gh input:checked").length;
   const b = $("gh-add");
@@ -683,42 +863,25 @@ $("file").onchange = async ev => {
   } finally { ev.target.value = ""; }
 };
 
-// --- Compte et synchronisation (Firebase Auth + Firestore) ---
-// Optionnel : colle ici ton firebaseConfig (il n'est pas secret) pour que tous tes appareils se connectent seuls.
-const FIREBASE_CONFIG = null;
-const CFGKEY = "indexeur-fbcfg-v1";
+// ============================================================
+//  Compte Google + synchronisation (Firebase Auth + Firestore)
+// ============================================================
 const FB_VERSION = "10.14.1";
 let fb = null, fbState = "idle", fbError = "", cloudUser = null;
 let unsubSnap = null, firstSync = true, pushTimer = null, syncMsg = "";
 
-function getConfig() {
-  if (FIREBASE_CONFIG) return FIREBASE_CONFIG;
-  try { return JSON.parse(localStorage.getItem(CFGKEY) || "null"); } catch { return null; }
-}
-function parseConfig(text) {
-  const cfg = {};
-  for (const m of text.matchAll(/["']?(\w+)["']?\s*:\s*["']([^"']+)["']/g)) cfg[m[1]] = m[2];
-  const missing = ["apiKey", "authDomain", "projectId", "appId"].filter(k => !cfg[k]);
-  if (missing.length) throw new Error("Config incomplète, il manque : " + missing.join(", "));
-  return cfg;
-}
 function authErr(err) {
   const c = err && err.code || "";
   const map = {
-    "auth/invalid-credential": "Email ou mot de passe incorrect.",
-    "auth/wrong-password": "Email ou mot de passe incorrect.",
-    "auth/user-not-found": "Aucun compte avec cet email. Utilise « Créer un compte ».",
-    "auth/invalid-email": "Cet email n'est pas valide.",
-    "auth/email-already-in-use": "Un compte existe déjà avec cet email. Utilise « Se connecter ».",
-    "auth/weak-password": "Mot de passe trop court (6 caractères minimum).",
-    "auth/missing-password": "Entre ton mot de passe.",
+    "auth/operation-not-allowed": "Dans Firebase : Authentication → Sign-in method → active « Google ».",
+    "auth/unauthorized-domain": "Dans Firebase : Authentication → Settings → Authorized domains → ajoute le domaine de ce site (" + location.hostname + ").",
+    "auth/popup-blocked": "Le navigateur a bloqué la fenêtre Google. Autorise les pop-ups pour ce site.",
     "auth/network-request-failed": "Pas de connexion internet.",
     "auth/too-many-requests": "Trop d'essais, réessaie dans quelques minutes.",
-    "auth/operation-not-allowed": "Dans Firebase : Authentication → Sign-in method → active « E-mail/Mot de passe ».",
-    "auth/unauthorized-domain": "Dans Firebase : Authentication → Settings → Authorized domains → ajoute le domaine de ce site.",
-    "auth/invalid-api-key": "La clé apiKey de la config est invalide."
+    "auth/invalid-api-key": "La clé apiKey de la config Firebase est invalide.",
+    "auth/internal-error": "Erreur interne Firebase. Vérifie que « Google » est bien activé dans Authentication."
   };
-  return (map[c] || "Erreur de compte") + (map[c] ? "" : " : " + (err && err.message || c)) + (c ? "\n(" + c + ")" : "");
+  return (map[c] || "Connexion impossible : " + (err && err.message || c)) + (c ? "\n(" + c + ")" : "");
 }
 const hhmm = () => new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
 function setSync(msg) {
@@ -727,17 +890,17 @@ function setSync(msg) {
 }
 
 async function initCloud() {
-  const cfg = getConfig();
-  if (!cfg) { renderAccount(); return; }
+  if (!FIREBASE_CONFIG) { renderAccount(); return; }
   fbState = "loading"; fbError = ""; renderAccount();
   try {
     const base = `https://www.gstatic.com/firebasejs/${FB_VERSION}/`;
     const [appM, authM, fsM] = await Promise.all([
       import(base + "firebase-app.js"), import(base + "firebase-auth.js"), import(base + "firebase-firestore.js")
     ]);
-    const app = appM.initializeApp(cfg);
+    const app = appM.initializeApp(FIREBASE_CONFIG);
     fb = { authM, fsM, auth: authM.getAuth(app), db: fsM.getFirestore(app) };
     fbState = "ready";
+    authM.getRedirectResult(fb.auth).catch(err => showError(authErr(err)));
     authM.onAuthStateChanged(fb.auth, onUser, err => showError("Compte : " + err.message));
   } catch (err) {
     fbState = "error"; fbError = err.message || String(err);
@@ -745,7 +908,6 @@ async function initCloud() {
     renderAccount();
   }
 }
-
 function onUser(user) {
   stopSync();
   cloudUser = user;
@@ -763,23 +925,22 @@ function writeLocal() {
     localStorage.setItem(CKEY, JSON.stringify(cats));
   } catch (err) { showError("Sauvegarde locale impossible : " + err.message); }
 }
-
 function startSync(user) {
   firstSync = true;
   const ref = fb.fsM.doc(fb.db, "users", user.uid);
   setSync("Synchronisation…");
   unsubSnap = fb.fsM.onSnapshot(ref, snap => {
-    if (snap.metadata.hasPendingWrites || pushTimer) return; // nos propres modifs en cours : on ne les écrase pas
+    if (snap.metadata.hasPendingWrites || pushTimer) return;
     const remote = snap.exists() ? snap.data() : null;
 
     if (firstSync) {
       firstSync = false;
-      if (!remote) { pushNow(); return; }               // premier compte : on envoie ce qu'il y a sur cet appareil
+      if (!remote) { pushNow(); return; }
       const rl = Array.isArray(remote.links) ? remote.links : [];
       const rc = Array.isArray(remote.cats) ? remote.cats : [];
       const outLinks = rl.map(l => ({ ...l })), outCats = rc.map(c => ({ ...c }));
       const added = links.filter(l => !outLinks.some(x => x.url === l.url));
-      if (added.length) {                               // fusion : on ajoute ce qui n'est pas déjà dans le compte
+      if (added.length) {
         const used = new Set(added.map(l => l.cat).filter(Boolean));
         const idMap = {};
         cats.forEach(c => {
@@ -797,7 +958,6 @@ function startSync(user) {
       if (added.length) pushNow(); else setSync("Synchronisé à " + hhmm());
       return;
     }
-
     if (!remote) return;
     links = Array.isArray(remote.links) ? remote.links : [];
     cats = Array.isArray(remote.cats) ? remote.cats : [];
@@ -810,7 +970,6 @@ function startSync(user) {
       : "Synchro : " + err.message);
   });
 }
-
 function schedulePush() {
   if (!cloudUser || !fb || firstSync) return;
   clearTimeout(pushTimer);
@@ -831,6 +990,21 @@ async function pushNow() {
   }
 }
 
+async function googleSignIn() {
+  const provider = new fb.authM.GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: "select_account" });
+  try {
+    await fb.authM.signInWithPopup(fb.auth, provider);
+  } catch (err) {
+    const c = err && err.code;
+    if (c === "auth/popup-closed-by-user" || c === "auth/cancelled-popup-request") return;
+    if (c === "auth/popup-blocked" || c === "auth/operation-not-supported-in-this-environment" || c === "auth/web-storage-unsupported") {
+      await fb.authM.signInWithRedirect(fb.auth, provider);   // plan B : redirection
+      return;
+    }
+    throw err;
+  }
+}
 async function doSignOut() {
   if (!confirm("Te déconnecter ? Les liens seront effacés de cet appareil, mais ils restent dans ton compte.")) return;
   if (pushTimer || syncMsg.startsWith("Échec")) {
@@ -840,64 +1014,95 @@ async function doSignOut() {
   try {
     await fb.authM.signOut(fb.auth);
     links = []; cats = DEFAULT_CATS.map(c => ({ ...c })); view = null;
-    writeLocal(); render();
+    writeLocal(); closeSheets(); render();
   } catch (err) { showError("Déconnexion impossible : " + err.message); }
 }
 
 function renderAccount() {
-  const box = $("acc-box"); if (!box) return;
-  const cfg = getConfig();
-  const canReset = !FIREBASE_CONFIG;
-  const resetBtn = canReset ? '<button class="link-btn" id="acc-cfg">Changer la config</button>' : "";
-  const bindReset = () => { const b = $("acc-cfg"); if (b) b.onclick = () => { if (confirm("Supprimer la config Firebase de cet appareil ?")) { localStorage.removeItem(CFGKEY); location.reload(); } }; };
+  // Bouton avatar en haut à droite
+  const b = $("btn-acc");
+  b.className = "round" + (cloudUser ? " me" : "");
+  if (cloudUser && cloudUser.photoURL) {
+    b.innerHTML = `<img alt="" referrerpolicy="no-referrer" src="${esc(cloudUser.photoURL)}">`;
+    b.querySelector("img").onerror = () => { b.textContent = (cloudUser.displayName || cloudUser.email || "?")[0].toUpperCase(); };
+  } else if (cloudUser) {
+    b.textContent = (cloudUser.displayName || cloudUser.email || "?")[0].toUpperCase();
+  } else {
+    b.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4.5-6 8-6s7 2 8 6"/></svg>';
+  }
 
-  if (!cfg) {
-    box.innerHTML = `<p>Crée un compte pour retrouver tes liens sur tous tes appareils. Colle d'abord la config de ton projet Firebase.</p>
-      <textarea class="field" id="fb-config" rows="4" placeholder="const firebaseConfig = { apiKey: &quot;...&quot;, authDomain: &quot;...&quot;, projectId: &quot;...&quot;, appId: &quot;...&quot; };"></textarea>
-      <button class="btn pri" id="fb-save" style="width:100%">Enregistrer la config</button>`;
-    $("fb-save").onclick = () => {
-      try { localStorage.setItem(CFGKEY, JSON.stringify(parseConfig($("fb-config").value))); initCloud(); }
-      catch (err) { showError(err.message); }
-    };
+  const box = $("acc-box");
+  if (!FIREBASE_CONFIG) {
+    box.innerHTML = "<p>La synchronisation entre appareils n'est pas encore activée sur cette version. Tes liens restent enregistrés sur cet appareil.</p>";
     return;
   }
   if (fbState === "loading" || fbState === "idle") { box.innerHTML = "<p>Connexion à Firebase…</p>"; return; }
   if (fbState === "error") {
-    box.innerHTML = `<p>Firebase n'a pas pu démarrer : ${esc(fbError)}</p>
-      <div class="row"><button class="btn" id="acc-retry">Réessayer</button></div>${resetBtn}`;
-    $("acc-retry").onclick = initCloud; bindReset();
+    box.innerHTML = `<p>Firebase n'a pas pu démarrer : ${esc(fbError)}</p><button class="btn" id="acc-retry" style="width:100%">Réessayer</button>`;
+    $("acc-retry").onclick = initCloud;
     return;
   }
   if (cloudUser) {
-    box.innerHTML = `<p style="margin-bottom:2px">Connecté avec <b>${esc(cloudUser.email || "")}</b></p>
+    const name = cloudUser.displayName || "Compte Google";
+    box.innerHTML = `<div class="who"><span class="round" id="who-av"></span><div><b>${esc(name)}</b><br><small>${esc(cloudUser.email || "")}</small></div></div>
       <div class="acc-status" id="acc-status">${esc(syncMsg)}</div>
       <button class="btn" id="acc-out" style="width:100%">Se déconnecter</button>`;
+    const av = $("who-av");
+    if (cloudUser.photoURL) {
+      av.innerHTML = `<img alt="" referrerpolicy="no-referrer" src="${esc(cloudUser.photoURL)}">`;
+      av.querySelector("img").onerror = () => { av.textContent = name[0].toUpperCase(); };
+    } else av.textContent = name[0].toUpperCase();
     $("acc-out").onclick = doSignOut;
     return;
   }
-  box.innerHTML = `<input class="field" id="acc-email" type="email" placeholder="Email" autocomplete="email" autocapitalize="off" autocorrect="off">
-    <input class="field" id="acc-pass" type="password" placeholder="Mot de passe (6 caractères minimum)" autocomplete="current-password">
-    <div class="row"><button class="btn pri" id="acc-in">Se connecter</button><button class="btn" id="acc-up">Créer un compte</button></div>
-    <div><button class="link-btn" id="acc-reset">Mot de passe oublié ?</button>${resetBtn}</div>`;
-  const creds = () => [$("acc-email").value.trim(), $("acc-pass").value];
-  const run = async (btn, fn) => {
-    btn.disabled = true;
-    try { await fn(); } catch (err) { showError(authErr(err)); } finally { btn.disabled = false; }
+  box.innerHTML = `<p>Connecte-toi avec ton compte Google pour retrouver tes liens sur tous tes appareils. Pas de mot de passe.</p>
+    <button class="btn pri" id="acc-google" style="width:100%">Continuer avec Google</button>`;
+  $("acc-google").onclick = async e => {
+    const btn = e.currentTarget; btn.disabled = true;
+    try { await googleSignIn(); } catch (err) { showError(authErr(err)); } finally { btn.disabled = false; }
   };
-  $("acc-in").onclick = e => run(e.currentTarget, () => fb.authM.signInWithEmailAndPassword(fb.auth, ...creds()));
-  $("acc-up").onclick = e => run(e.currentTarget, () => fb.authM.createUserWithEmailAndPassword(fb.auth, ...creds()));
-  $("acc-reset").onclick = e => run(e.currentTarget, async () => {
-    const email = $("acc-email").value.trim();
-    if (!email) throw { code: "auth/invalid-email" };
-    await fb.authM.sendPasswordResetEmail(fb.auth, email);
-    alert("Email envoyé à " + email + " (regarde aussi les spams).");
-  });
-  bindReset();
 }
 
+// ============================================================
+//  Installation de l'appli (PWA)
+// ============================================================
+let installEvt = null;
+const isStandalone = () => (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+async function doInstall() {
+  if (!installEvt) return;
+  try {
+    installEvt.prompt();
+    await installEvt.userChoice;
+  } catch (err) { showError("Installation impossible : " + err.message); }
+  installEvt = null; renderInstall();
+}
+function renderInstall() {
+  const box = $("inst-box");
+  $("btn-install").hidden = !installEvt;
+  if (isStandalone()) { box.innerHTML = "<p>Mylinks est installée sur cet appareil.</p>"; return; }
+  if (installEvt) {
+    box.innerHTML = `<p>Ajoute Mylinks à ton écran d'accueil : elle s'ouvre comme une vraie appli.</p><button class="btn pri" id="inst-btn" style="width:100%">Installer l'appli</button>`;
+    $("inst-btn").onclick = doInstall;
+    return;
+  }
+  if (isIOS()) { box.innerHTML = "<p>Sur iPhone et iPad : touche le bouton Partager de Safari, puis « Sur l'écran d'accueil ».</p>"; return; }
+  box.innerHTML = "<p>Ouvre le menu de ton navigateur et choisis « Installer l'application » ou « Ajouter à l'écran d'accueil ».</p>";
+}
+window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; renderInstall(); });
+window.addEventListener("appinstalled", () => { installEvt = null; renderInstall(); });
+$("btn-install").onclick = doInstall;
+
+if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) {
+  navigator.serviceWorker.register("sw.js").catch(err => showError("Mode appli indisponible : " + err.message));
+}
+
+// --- Démarrage ---
 load();
 render();
 renderAccount();
+renderInstall();
 initCloud();
 </script>
 </body>
