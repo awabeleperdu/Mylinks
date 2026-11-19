@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#14090c">
+<meta name="theme-color" content="#0e0f13">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Mylinks">
@@ -17,8 +17,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg:#14090c; --surface:#1f1015; --surface2:#2b161d; --line:#3c2029;
-    --txt:#f6ecdc; --mut:#c9b3ad; --acc:#ffc43d; --acc-ink:#1a0c10; --err:#ff9a9a;
+    --bg:#0e0f13; --surface:#17181e; --surface2:#21232b; --line:#2e3039;
+    --txt:#f1f1f4; --mut:#a9acb8; --acc:#f1f1f4; --acc-ink:#101116; --err:#ff9a9a;
     --shadow:0 10px 30px rgba(0,0,0,.4);
     --head:"Bowlby One", system-ui, sans-serif;
     --body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -58,17 +58,17 @@
   #search::placeholder { color:var(--mut); }
 
   /* Grande affiche */
-  .hero { position:relative; margin:0 16px; height:430px; border-radius:28px; overflow:hidden; background:linear-gradient(180deg,#a3182a 0%,#5c0f1c 48%,#14090c 100%); }
-  .folds { position:absolute; inset:0; background:repeating-linear-gradient(90deg,rgba(0,0,0,.20) 0 22px,rgba(255,255,255,.05) 22px 44px); }
-  .hero .bar { position:absolute; left:0; right:0; top:0; height:14px; background:var(--acc); opacity:.9; }
+  .hero { position:relative; margin:0 16px; height:430px; border-radius:28px; overflow:hidden; }
+  .folds { position:absolute; inset:0; }
+  .hero .bar { position:absolute; left:0; right:0; top:0; height:14px; opacity:.9; }
   .hero .art { position:absolute; left:50%; top:34px; transform:translateX(-50%); }
-  .hero .fade { position:absolute; left:0; right:0; bottom:0; height:230px; background:linear-gradient(180deg,rgba(20,9,12,0) 0%,#14090c 78%); }
+  .hero .fade { position:absolute; left:0; right:0; bottom:0; height:230px; background:linear-gradient(180deg,rgba(14,15,19,0) 0%,#0e0f13 78%); }
   .hero .txt { position:absolute; left:20px; right:20px; bottom:22px; display:flex; flex-direction:column; gap:12px; }
-  .hero h1 { margin:0; font-family:var(--head); font-weight:400; font-size:40px; line-height:1; color:#fff1d0; overflow-wrap:anywhere; }
-  .hero p { margin:0; font-size:15px; line-height:1.4; color:#d9c3bb; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .hero h1 { margin:0; font-family:var(--head); font-weight:400; font-size:40px; line-height:1; color:#fff; overflow-wrap:anywhere; }
+  .hero p { margin:0; font-size:15px; line-height:1.4; color:rgba(255,255,255,.78); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
   .btns { display:flex; gap:10px; margin-top:4px; flex-wrap:wrap; }
   .cta { height:48px; padding:0 20px; border-radius:14px; background:var(--acc); color:var(--acc-ink); font-weight:700; font-size:16px; display:inline-flex; align-items:center; gap:10px; }
-  .cta.ghost { background:rgba(255,241,208,.16); color:#fff1d0; font-weight:600; }
+  .cta.ghost { background:rgba(255,255,255,.16); color:#fff; font-weight:600; }
   .cta svg { width:16px; height:16px; }
 
   /* Rangées */
@@ -81,7 +81,7 @@
   .poster .pi svg { width:34px; height:34px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
   .pt { display:block; font-family:var(--head); font-size:18px; line-height:1.05; overflow-wrap:anywhere; }
   .pn { display:block; font-size:13px; margin-top:6px; }
-  .poster.new { background:transparent; border:2px dashed #5b3a42; align-items:center; justify-content:center; gap:10px; color:var(--mut); font-size:14px; font-weight:600; text-align:center; }
+  .poster.new { background:transparent; border:2px dashed var(--line); align-items:center; justify-content:center; gap:10px; color:var(--mut); font-size:14px; font-weight:600; text-align:center; }
   .poster.new svg { width:30px; height:30px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; }
   .rec { flex:none; width:210px; }
   .rec .thumb { height:118px; }
@@ -96,33 +96,33 @@
   .card { position:relative; min-width:0; }
   .card .thumb { height:96px; }
   .card .thumb .big { font-size:100px; right:-4px; bottom:-24px; }
-  .card .more { position:absolute; top:4px; right:4px; width:40px; height:40px; border-radius:50%; display:grid; place-items:center; background:rgba(20,9,12,.6); color:#fff1d0; }
+  .card .more { position:absolute; top:4px; right:4px; width:40px; height:40px; border-radius:50%; display:grid; place-items:center; background:rgba(14,15,19,.6); color:#fff; }
   .card .more svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; }
   .card .t { font-weight:700; font-size:15px; margin-top:8px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .card .h { font-size:12px; color:var(--mut); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 
   /* Bandeau d'une catégorie */
-  .banner { position:relative; height:190px; padding:18px 16px 0; background:linear-gradient(180deg,#a3182a 0%,#5c0f1c 60%,#14090c 100%); overflow:hidden; }
+  .banner { position:relative; height:190px; padding:18px 16px 0; overflow:hidden; }
   .banner .art { position:absolute; right:14px; top:34px; }
   .banner .in { position:relative; display:flex; flex-direction:column; gap:14px; }
   .banner .brow { display:flex; gap:8px; }
-  .banner .round { background:rgba(20,9,12,.55); color:#fff1d0; }
-  .banner h1 { margin:0; font-family:var(--head); font-weight:400; font-size:32px; line-height:1; color:#fff1d0; max-width:230px; overflow-wrap:anywhere; }
-  .banner .c { font-size:14px; color:#e6cfc6; margin-top:8px; }
+  .banner .round { background:rgba(14,15,19,.55); color:#fff; }
+  .banner h1 { margin:0; font-family:var(--head); font-weight:400; font-size:32px; line-height:1; color:#fff; max-width:230px; overflow-wrap:anywhere; }
+  .banner .c { font-size:14px; color:rgba(255,255,255,.8); margin-top:8px; }
   #tags { display:flex; gap:8px; overflow-x:auto; padding:6px 16px 4px; scrollbar-width:none; }
   #tags::-webkit-scrollbar { display:none; }
-  .tag { flex:none; height:40px; padding:0 18px; border-radius:99px; border:1px solid #4a2a33; color:#e6cfc6; font-weight:600; font-size:14px; }
+  .tag { flex:none; height:40px; padding:0 18px; border-radius:99px; border:1px solid var(--line); color:var(--mut); font-weight:600; font-size:14px; }
   .tag.on { background:var(--acc); border-color:var(--acc); color:var(--acc-ink); font-weight:700; }
 
   .empty { text-align:center; color:var(--mut); padding:50px 24px; }
   .empty b { display:block; font-family:var(--head); font-weight:400; font-size:22px; color:var(--txt); margin-bottom:8px; }
 
   /* Navigation du bas */
-  #nav { position:fixed; left:0; right:0; bottom:0; z-index:15; max-width:720px; margin-inline:auto; height:calc(84px + env(safe-area-inset-bottom)); padding:0 10px env(safe-area-inset-bottom); display:flex; align-items:center; justify-content:space-around; background:#1d0e13; border-top:1px solid #34202a; }
+  #nav { position:fixed; left:0; right:0; bottom:0; z-index:15; max-width:720px; margin-inline:auto; height:calc(84px + env(safe-area-inset-bottom)); padding:0 10px env(safe-area-inset-bottom); display:flex; align-items:center; justify-content:space-around; background:#12131a; border-top:1px solid var(--line); }
   #nav .nb { width:72px; display:flex; flex-direction:column; align-items:center; gap:4px; color:var(--mut); font-size:12px; font-weight:600; }
   #nav .nb svg { width:24px; height:24px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
   #nav .nb.on { color:var(--acc); }
-  #nav .add { width:56px; height:56px; border-radius:50%; background:var(--acc); color:var(--acc-ink); display:grid; place-items:center; margin-top:-18px; box-shadow:0 8px 22px rgba(255,196,61,.3); }
+  #nav .add { width:56px; height:56px; border-radius:50%; background:var(--acc); color:var(--acc-ink); display:grid; place-items:center; margin-top:-18px; box-shadow:0 8px 22px rgba(0,0,0,.45); }
   #nav .add svg { width:26px; height:26px; stroke:currentColor; fill:none; stroke-width:2.6; stroke-linecap:round; }
 
   /* Feuilles */
@@ -168,7 +168,14 @@
   .chk.dis { opacity:.45; cursor:default; }
   .sticky { position:sticky; bottom:-22px; background:var(--surface); padding:14px 0 4px; margin-top:6px; }
 
-  select.field option { background:#2b161d; color:#f6ecdc; }
+  .themes { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+  .theme { height:92px; border-radius:18px; padding:12px; display:flex; flex-direction:column; justify-content:space-between; text-align:left; font-weight:700; font-size:15px; }
+  .theme.on { outline:2px solid #fff; outline-offset:2px; }
+  .theme .ti svg { width:26px; height:26px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+  .or { display:flex; align-items:center; gap:10px; color:var(--mut); font-size:13px; margin:10px 0; }
+  .or::before, .or::after { content:""; flex:1; height:1px; background:var(--line); }
+  .linkish { display:block; margin:6px auto 0; padding:8px; color:var(--mut); font-size:14px; text-decoration:underline; }
+  select.field option { background:#21232b; color:#f1f1f4; }
   @media (prefers-reduced-motion: reduce) { .sheet { transition:none; } }
 </style>
 </head>
@@ -179,13 +186,7 @@
 <div id="app">
   <header class="top" id="top">
     <div class="logo">
-      <svg width="30" height="33" viewBox="0 0 200 220" aria-hidden="true">
-        <defs><clipPath id="lg-body"><path d="M40 92 L160 92 L146 208 Q145 214 139 214 L61 214 Q55 214 54 208 Z"/></clipPath></defs>
-        <g fill="#fff1d0"><circle cx="68" cy="66" r="24"/><circle cx="100" cy="50" r="28"/><circle cx="134" cy="66" r="24"/><circle cx="50" cy="84" r="17"/><circle cx="152" cy="84" r="17"/></g>
-        <g fill="#ffc43d"><circle cx="88" cy="40" r="12"/><circle cx="122" cy="34" r="11"/><circle cx="72" cy="76" r="10"/></g>
-        <g clip-path="url(#lg-body)"><rect x="36" y="92" width="24" height="124" fill="#fff1d0"/><rect x="60" y="92" width="24" height="124" fill="#c1272d"/><rect x="84" y="92" width="24" height="124" fill="#fff1d0"/><rect x="108" y="92" width="24" height="124" fill="#c1272d"/><rect x="132" y="92" width="30" height="124" fill="#fff1d0"/></g>
-        <rect x="32" y="84" width="136" height="14" rx="7" fill="#8f1b22"/>
-      </svg>
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
       <span>Mylinks</span>
     </div>
     <div class="tools">
@@ -216,8 +217,8 @@
 
   <!-- Une catégorie -->
   <section id="catview" hidden>
-    <header class="banner">
-      <div class="folds"></div>
+    <header class="banner" id="banner">
+      <div class="folds" id="ban-pat"></div>
       <div class="art" id="banner-art"></div>
       <div class="in">
         <div class="brow">
@@ -281,8 +282,17 @@
 <div class="sheet" id="sheet-cat" role="dialog" aria-label="Options de la catégorie">
   <div class="grip"></div>
   <h2 id="catopt-title"></h2>
+  <button class="list-btn" id="catopt-theme"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.5 0 2-1 1.5-2s0-2 1.5-2h2a3 3 0 0 0 3-3c0-6-4-11-8-11z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/></svg>Changer le thème</button>
   <button class="list-btn" id="catopt-rename"><svg viewBox="0 0 24 24"><path d="M4 20h4l10-10-4-4L4 16z"/></svg>Renommer</button>
   <button class="list-btn danger" id="catopt-del"><svg viewBox="0 0 24 24"><path d="M5 7h14M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>Supprimer la catégorie</button>
+</div>
+
+<!-- Feuille : thème d'une catégorie -->
+<div class="sheet" id="sheet-theme" role="dialog" aria-label="Thème de la catégorie">
+  <div class="grip"></div>
+  <h2 id="theme-title">Thème</h2>
+  <p>Chaque catégorie a son ambiance : couleurs, motif et illustration.</p>
+  <div class="themes" id="theme-grid"></div>
 </div>
 
 <!-- Feuille : réglages -->
@@ -394,30 +404,58 @@ function catItems(id) {
   return links.filter(l => id === "none" ? (!l.cat || !cats.some(c => c.id === l.cat)) : l.cat === id);
 }
 
-// --- Couleurs et icônes des catégories ---
-const TINTS = [
-  { a:"#d33a3f", b:"#8f1b22", ink:"#fff1d0", sub:"#ffe3c7", bg1:"#3a1a24", bg2:"#2a1219", br:"#3c2029" },
-  { a:"#25a6a6", b:"#14606a", ink:"#f2fffd", sub:"#d3f5f0", bg1:"#102f35", bg2:"#0f2227", br:"#1d4249" },
-  { a:"#ffcf5c", b:"#e0951a", ink:"#2a1604", sub:"#4a2a08", bg1:"#3a2c0c", bg2:"#291f09", br:"#4d3a10" },
-  { a:"#6a63d6", b:"#3a3590", ink:"#f4f3ff", sub:"#dcdaff", bg1:"#25234f", bg2:"#1a1938", br:"#34316b" }
-];
-const TINT_NONE = { a:"#9a8a88", b:"#4d4140", ink:"#fbf3ee", sub:"#e5d8d2", bg1:"#2c2224", bg2:"#221a1c", br:"#3d3032" };
-function tintOf(catId) {
-  const i = cats.findIndex(c => c.id === catId);
-  return i < 0 ? TINT_NONE : TINTS[i % TINTS.length];
-}
-const ICON = {
-  code:   '<svg viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg>',
-  globe:  '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg>',
-  star:   '<svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>',
-  folder: '<svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
-  plus:   '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',
-  play:   '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M6 4l14 8-14 8z"/></svg>',
-  dots:   '<svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg>'
+// --- Thèmes : chaque catégorie a ses couleurs, son motif et son illustration ---
+const P = {   // tracés d'icônes (viewBox 24)
+  link:   '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+  code:   '<path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/>',
+  web:    '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/>',
+  star:   '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+  folder: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+  stream: '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9l5 3-5 3z"/>',
+  game:   '<rect x="2.5" y="8" width="19" height="10" rx="5"/><path d="M8 11v4M6 13h4"/><circle cx="16" cy="12" r=".7"/><circle cx="18.2" cy="14.2" r=".7"/>',
+  music:  '<path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/>',
+  school: '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-4.5"/>'
 };
-const CAT_ICONS = { "c-repos": ICON.code, "c-sites": ICON.globe, "c-perso": ICON.star };
-const iconOf = id => CAT_ICONS[id] || ICON.folder;
+const svgIcon = (k, extra) => `<svg viewBox="0 0 24 24" ${extra || ""}>${P[k] || P.folder}</svg>`;
 
+const THEMES = {
+  code:   { label:"Code",      a:"#2fbf8a", b:"#0f6a52", ink:"#ecfff7", sub:"#c4f2e0", on:"#06241a", bg1:"#0f2a24", bg2:"#0b1f1a", br:"#1b4a3e",
+            pat:"repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,transparent 1px 22px),repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 1px,transparent 1px 22px)" },
+  web:    { label:"Web",       a:"#4c8dff", b:"#1f3f9e", ink:"#f1f6ff", sub:"#cfdcff", on:"#07173a", bg1:"#13203f", bg2:"#0d1730", br:"#223a70",
+            pat:"repeating-radial-gradient(circle at 50% 38%,rgba(255,255,255,.07) 0 2px,transparent 2px 34px)" },
+  star:   { label:"Favoris",   a:"#ffcf5c", b:"#e0951a", ink:"#2a1604", sub:"#4a2a08", on:"#2a1604", bg1:"#3a2c0c", bg2:"#291f09", br:"#4d3a10",
+            pat:"repeating-conic-gradient(from 0deg at 50% 36%,rgba(255,255,255,.08) 0 8deg,transparent 8deg 20deg)" },
+  folder: { label:"Dossier",   a:"#8a84e8", b:"#443f9c", ink:"#f4f3ff", sub:"#dcdaff", on:"#17143f", bg1:"#25234f", bg2:"#1a1938", br:"#34316b",
+            pat:"repeating-linear-gradient(135deg,rgba(255,255,255,.05) 0 2px,transparent 2px 18px)" },
+  stream: { label:"Streaming", a:"#c8323a", b:"#8f1b22", ink:"#fff1d0", sub:"#ffe3c7", on:"#fff6e6", bg1:"#3a1a24", bg2:"#2a1219", br:"#3c2029",
+            pat:"repeating-linear-gradient(90deg,rgba(0,0,0,.22) 0 22px,rgba(255,255,255,.05) 22px 44px)" },
+  game:   { label:"Jeux",      a:"#ff5fa2", b:"#a3195b", ink:"#fff0f7", sub:"#ffd0e5", on:"#2a0615", bg1:"#3a1530", bg2:"#2a0f23", br:"#5a2248",
+            pat:"conic-gradient(rgba(255,255,255,.06) 25%,transparent 0 50%,rgba(255,255,255,.06) 0 75%,transparent 0) 0 0/40px 40px" },
+  music:  { label:"Musique",   a:"#ff8a3d", b:"#b24a12", ink:"#fff3ea", sub:"#ffd9bf", on:"#2a1204", bg1:"#3a2010", bg2:"#2a170b", br:"#5a3318",
+            pat:"repeating-linear-gradient(90deg,rgba(255,255,255,.07) 0 6px,transparent 6px 20px)" },
+  school: { label:"Études",    a:"#3cc7e0", b:"#126b80", ink:"#effcff", sub:"#c6f0f8", on:"#04222a", bg1:"#10303a", bg2:"#0b222a", br:"#1d4a58",
+            pat:"repeating-linear-gradient(0deg,rgba(255,255,255,.06) 0 1px,transparent 1px 26px)" }
+};
+const NEUTRAL = { label:"Sans thème", a:"#c9ccd6", b:"#4a4d5a", ink:"#f4f5f8", sub:"#dfe1e8", on:"#101116", bg1:"#22242c", bg2:"#1a1c23", br:"#2e3039",
+                  pat:"repeating-linear-gradient(135deg,rgba(255,255,255,.04) 0 2px,transparent 2px 18px)" };
+const THEME_BY_ID = { "c-repos":"code", "c-sites":"web", "c-perso":"star", "c-autre":"folder", "c-stream":"stream" };
+
+function themeKey(catId) {
+  const c = cats.find(c => c.id === catId);
+  if (!c) return null;
+  const k = c.theme || THEME_BY_ID[c.id] || "folder";
+  return THEMES[k] ? k : "folder";
+}
+function tintOf(catId) { const k = themeKey(catId); return k ? THEMES[k] : NEUTRAL; }
+const iconOf = catId => svgIcon(themeKey(catId) || "folder");
+
+const ICON = {
+  plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  play: '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M6 4l14 8-14 8z"/></svg>',
+  dots: '<svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg>'
+};
+
+// Le popcorn n'existe que pour le thème « Streaming »
 function bucketSvg(id, w, h, style) {
   return `<svg width="${w}" height="${h}" viewBox="0 0 200 220" style="${style || ""}" aria-hidden="true">
     <defs><clipPath id="${id}"><path d="M40 92 L160 92 L146 208 Q145 214 139 214 L61 214 Q55 214 54 208 Z"/></clipPath></defs>
@@ -426,11 +464,17 @@ function bucketSvg(id, w, h, style) {
     <g clip-path="url(#${id})"><rect x="36" y="92" width="24" height="124" fill="#fff1d0"/><rect x="60" y="92" width="24" height="124" fill="#c1272d"/><rect x="84" y="92" width="24" height="124" fill="#fff1d0"/><rect x="108" y="92" width="24" height="124" fill="#c1272d"/><rect x="132" y="92" width="30" height="124" fill="#fff1d0"/></g>
     <rect x="32" y="84" width="136" height="14" rx="7" fill="#8f1b22"/></svg>`;
 }
+// Grande illustration d'un thème : popcorn pour Streaming, sinon le symbole du thème
+function artSvg(key, w, h) {
+  if (key === "stream") return bucketSvg("art-body-" + w, w, h);
+  return `<svg width="${w}" height="${h}" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width=".8" stroke-linecap="round" stroke-linejoin="round" opacity=".95" aria-hidden="true">${P[key] || P.link}</svg>`;
+}
 
 // --- Stockage ---
 const DEFAULT_CATS = [
   { id: "c-repos", name: "Projets GitHub" },
   { id: "c-sites", name: "Sites en ligne" },
+  { id: "c-stream", name: "Streaming" },
   { id: "c-perso", name: "Projets perso" },
   { id: "c-autre", name: "Autres projets" }
 ];
@@ -446,6 +490,10 @@ function load() {
     const rawCats = localStorage.getItem(CKEY);
     if (rawCats) {
       cats = JSON.parse(rawCats);
+      // Une seule fois : ajoute la catégorie « Streaming » (thème popcorn) aux comptes existants
+      let seen = false;
+      try { seen = !!localStorage.getItem("mylinks-stream-seen"); localStorage.setItem("mylinks-stream-seen", "1"); } catch {}
+      if (!seen && !cats.some(c => c.id === "c-stream")) { cats.splice(Math.min(2, cats.length), 0, { id: "c-stream", name: "Streaming" }); saveCats(); }
     } else {
       cats = DEFAULT_CATS.map(c => ({ ...c }));
       links.forEach(l => { if (l.cat === undefined) l.cat = catFromTags(l.tags || []); });
@@ -506,13 +554,37 @@ $("nav-acc").onclick = () => openSheet("sheet-more");
 $("search").oninput = render;
 
 // --- Catégories ---
+let themeTarget = null;   // { mode:"new", name } ou { mode:"edit", id }
 function addCategory() {
   const name = (prompt("Nom de la nouvelle catégorie ?") || "").trim();
   if (!name) return;
   if (cats.some(c => c.name.toLowerCase() === name.toLowerCase())) return showError("Cette catégorie existe déjà.");
-  cats.push({ id: newId("c"), name });
-  saveCats(); render();
+  themeTarget = { mode: "new", name };
+  openThemePicker("Thème de « " + name + " »", "folder");
 }
+function openThemePicker(title, current) {
+  $("theme-title").textContent = title;
+  const grid = $("theme-grid");
+  grid.innerHTML = Object.keys(THEMES).map(k => {
+    const t = THEMES[k];
+    return `<button class="theme ${k === current ? "on" : ""}" data-k="${k}" style="background:${t.pat},linear-gradient(160deg,${t.a},${t.b});color:${t.ink}"><span class="ti">${svgIcon(k)}</span>${esc(t.label)}</button>`;
+  }).join("");
+  grid.querySelectorAll(".theme").forEach(b => b.onclick = () => pickTheme(b.dataset.k));
+  openSheet("sheet-theme");
+}
+function pickTheme(k) {
+  if (!themeTarget) return;
+  if (themeTarget.mode === "new") cats.push({ id: newId("c"), name: themeTarget.name, theme: k });
+  else { const c = cats.find(c => c.id === themeTarget.id); if (c) c.theme = k; }
+  themeTarget = null;
+  saveCats(); closeSheets(); render();
+}
+$("catopt-theme").onclick = () => {
+  if (!cats.some(c => c.id === view)) return;
+  themeTarget = { mode: "edit", id: view };
+  closeSheets();
+  openThemePicker("Thème de « " + catName(view) + " »", themeKey(view));
+};
 $("btn-catmore").onclick = () => {
   if (view === "none" || !cats.some(c => c.id === view)) return showError("Cette catégorie ne peut pas être modifiée.");
   $("catopt-title").textContent = catName(view);
@@ -629,21 +701,24 @@ function renderHero() {
   cats.forEach(c => { const n = catItems(c.id).length; if (n > bestN) { best = { id: c.id, name: c.name }; bestN = n; } });
   if (!best && none.length) best = { id: "none", name: "Sans catégorie" };
   const items = best ? catItems(best.id) : [];
+  const t = best ? tintOf(best.id) : NEUTRAL;
+  const key = best ? (themeKey(best.id) || "link") : "link";
+  const stream = key === "stream";
   const title = best ? best.name : "Bienvenue";
   const desc = best
     ? plural(items.length, "lien", "liens") + " : " + items.slice(0, 3).map(l => l.title).join(", ") + (items.length > 3 ? "…" : "")
     : "Ajoute ton premier lien ou importe tes repos GitHub.";
 
-  $("hero").innerHTML = `<div class="hero">
-    <div class="folds"></div><div class="bar"></div>
-    <div class="art">${bucketSvg("hero-body", 210, 231)}</div>
+  $("hero").innerHTML = `<div class="hero" style="background:linear-gradient(180deg,${t.b} 0%,${t.bg1} 52%,var(--bg) 100%)">
+    <div class="folds" style="background:${t.pat}"></div><div class="bar" style="background:${t.a}"></div>
+    <div class="art" style="top:${stream ? 34 : 64}px">${artSvg(key, stream ? 210 : 170, stream ? 231 : 170)}</div>
     <div class="fade"></div>
     <div class="txt">
       <h1>${esc(title)}</h1>
       <p>${esc(desc)}</p>
       <div class="btns">
-        <button class="cta" id="hero-main">${ICON.play}${best ? "Ouvrir" : "Importer GitHub"}</button>
-        <button class="cta ghost" id="hero-add">${ICON.plus.replace("<svg", '<svg fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"')}Ajouter un lien</button>
+        <button class="cta" id="hero-main" style="background:${t.a};color:${t.on}">${ICON.play}${best ? "Ouvrir" : "Importer GitHub"}</button>
+        <button class="cta ghost" id="hero-add">${ICON.plus}Ajouter un lien</button>
       </div>
     </div>
   </div>`;
@@ -694,8 +769,17 @@ function renderCat() {
   const allTags = [...new Set(inView.flatMap(l => l.tags))].sort();
   if (activeTag && !allTags.includes(activeTag)) activeTag = null;
 
+  // Thème de la catégorie : couleurs, motif, illustration
+  const t = tintOf(view);
+  const key = themeKey(view) || "folder";
+  const stream = key === "stream";
+  $("banner").style.background = `linear-gradient(180deg,${t.b} 0%,${t.bg1} 60%,var(--bg) 100%)`;
+  $("ban-pat").style.background = t.pat;
+  $("catview").style.setProperty("--acc", t.a);
+  $("catview").style.setProperty("--acc-ink", t.on);
+  $("banner-art").innerHTML = artSvg(key, stream ? 120 : 96, stream ? 132 : 96);
+
   $("cat-title").textContent = catName(view === "none" ? "" : view);
-  $("banner-art").innerHTML = bucketSvg("ban-body", 120, 132);
   $("btn-catmore").hidden = view === "none";
 
   $("tags").hidden = !allTags.length;
@@ -880,7 +964,14 @@ let unsubSnap = null, firstSync = true, pushTimer = null, syncMsg = "";
 function authErr(err) {
   const c = err && err.code || "";
   const map = {
-    "auth/operation-not-allowed": "Dans Firebase : Authentication → Sign-in method → active « Google ».",
+    "auth/operation-not-allowed": "Dans Firebase : Authentication → Sign-in method → active « Google » et « E-mail/Mot de passe ».",
+    "auth/invalid-credential": "Email ou mot de passe incorrect.",
+    "auth/wrong-password": "Email ou mot de passe incorrect.",
+    "auth/user-not-found": "Aucun compte avec cet email : utilise « Créer un compte ».",
+    "auth/invalid-email": "Cet email n'est pas valide.",
+    "auth/email-already-in-use": "Un compte existe déjà avec cet email : utilise « Se connecter » (ou « Continuer avec Google » si tu l'as créé avec Google).",
+    "auth/weak-password": "Mot de passe trop court (6 caractères minimum).",
+    "auth/missing-password": "Entre ton mot de passe.",
     "auth/unauthorized-domain": "Dans Firebase : Authentication → Settings → Authorized domains → ajoute le domaine de ce site (" + location.hostname + ").",
     "auth/popup-blocked": "Le navigateur a bloqué la fenêtre Google. Autorise les pop-ups pour ce site.",
     "auth/network-request-failed": "Pas de connexion internet.",
@@ -1050,7 +1141,7 @@ function renderAccount() {
     return;
   }
   if (cloudUser) {
-    const name = cloudUser.displayName || "Compte Google";
+    const name = cloudUser.displayName || cloudUser.email || "Mon compte";
     box.innerHTML = `<div class="who"><span class="round" id="who-av"></span><div><b>${esc(name)}</b><br><small>${esc(cloudUser.email || "")}</small></div></div>
       <div class="acc-status" id="acc-status">${esc(syncMsg)}</div>
       <button class="btn" id="acc-out" style="width:100%">Se déconnecter</button>`;
@@ -1062,12 +1153,27 @@ function renderAccount() {
     $("acc-out").onclick = doSignOut;
     return;
   }
-  box.innerHTML = `<p>Connecte-toi avec ton compte Google pour retrouver tes liens sur tous tes appareils. Pas de mot de passe.</p>
-    <button class="btn pri" id="acc-google" style="width:100%">Continuer avec Google</button>`;
-  $("acc-google").onclick = async e => {
-    const btn = e.currentTarget; btn.disabled = true;
-    try { await googleSignIn(); } catch (err) { showError(authErr(err)); } finally { btn.disabled = false; }
+  box.innerHTML = `<p>Connecte-toi pour retrouver tes liens sur tous tes appareils, avec ton email ou avec ton compte Google.</p>
+    <input class="field" id="acc-email" type="email" placeholder="Email" autocomplete="email" autocapitalize="off" autocorrect="off">
+    <input class="field" id="acc-pass" type="password" placeholder="Mot de passe (6 caractères minimum)" autocomplete="current-password">
+    <div class="row2"><button class="btn pri" id="acc-in">Se connecter</button><button class="btn" id="acc-up">Créer un compte</button></div>
+    <button class="linkish" id="acc-reset">Mot de passe oublié ?</button>
+    <div class="or">ou</div>
+    <button class="btn" id="acc-google" style="width:100%">Continuer avec Google</button>`;
+  const creds = () => [$("acc-email").value.trim(), $("acc-pass").value];
+  const run = async (btn, fn) => {
+    btn.disabled = true;
+    try { await fn(); } catch (err) { showError(authErr(err)); } finally { btn.disabled = false; }
   };
+  $("acc-in").onclick = e => run(e.currentTarget, () => fb.authM.signInWithEmailAndPassword(fb.auth, ...creds()));
+  $("acc-up").onclick = e => run(e.currentTarget, () => fb.authM.createUserWithEmailAndPassword(fb.auth, ...creds()));
+  $("acc-reset").onclick = e => run(e.currentTarget, async () => {
+    const email = $("acc-email").value.trim();
+    if (!email) throw { code: "auth/invalid-email" };
+    await fb.authM.sendPasswordResetEmail(fb.auth, email);
+    alert("Email envoyé à " + email + " (regarde aussi les spams).");
+  });
+  $("acc-google").onclick = e => run(e.currentTarget, googleSignIn);
 }
 
 // ============================================================
